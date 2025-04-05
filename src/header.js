@@ -21,13 +21,13 @@ const Header = () => {
                 
             </div>
              
-            <div class="navbar" >
+            <div className="navbar" >
                 <a href="/">Home</a> 
                 <a href="/about">Lessson</a> 
                 <a href="/game">Game</a>
                 <a href="/assignment">Assignment</a>
-                <a href="" class="split" >LogIn</a>
-                <a href="" class="split" >SignUp</a>
+                <a href="/login" className="split" >LogIn</a>
+                <a href="/signUp" className="split" >SignUp</a>
 
             </div>
         </header>
