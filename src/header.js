@@ -26,8 +26,8 @@ const Header = () => {
                 <a href="/about">Lessson</a> 
                 <a href="/game">Game</a>
                 <a href="/assignment">Assignment</a>
-                <a href="" class="split" >LogIn</a>
-                <a href="" class="split" >SignUp</a>
+                <a href="/login" class="split" >LogIn</a>
+                <a href="/signUp" class="split" >SignUp</a>
 
             </div>
         </header>
