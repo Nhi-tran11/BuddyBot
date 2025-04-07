@@ -24,7 +24,7 @@ header {
       animation: App-logo-spin infinite 20s linear;
     }
   }
-  .navbar {
+  /* .navbar {
     background-color: #f0953a;
     overflow: hidden;
   }
@@ -34,18 +34,18 @@ header {
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
-    font-size: 17px;
-  }
+    font-size: 17px; */
+  /* } */
   
   /* Change the color of links on hover */
-  .navbar a:hover {
+  /* .navbar a:hover {
     background-color: #ddd;
     color: black;
-  }
+  } */
   
   /* Create a right-aligned (split) link inside the navigation bar */
-  .navbar a.split {
+  /* .navbar a.split {
     float: right;
     background-color: #04AA6D;
     color: white;
-  }
+  } */
