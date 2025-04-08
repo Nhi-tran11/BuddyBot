@@ -1,7 +1,7 @@
 import './App.css';
 import './Slideshow.css';
 // import ReactDOM from "react-dom/client";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from 'react-router-dom';
 import React from 'react';
 import Header from "./header";
 import Footer from "./footer";
@@ -36,26 +36,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
-      {/* </BrowserRouter> */}
-      {/* <main style={{ padding: "20px", minHeight: "80vh" }}>
-        <section className="welcomesection">
-
-          <div className="welcome-container">
-            <img src={logo1} alt="Welcome Logo" className="welcome-image" />
-            <h1 className="title">Welcome to BuddyBot - Learning Made Magical!</h1>
-          </div>
-        </section>
-
-        <section className='slideshowsection'>
-          <div className='Slideshow'>
-            <Slideshow />
-            <CloudGroup/>
-          </div>
-        </section>
-
-
-
-      </main> */}
+    
 
       <Footer />
     </div>
