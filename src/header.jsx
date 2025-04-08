@@ -8,7 +8,7 @@ import backgroundImage from "./image/colorful.webp";
 const Header = () => {
     return (
         <header >
-            <div class="header" style={{ 
+            <div className="header" style={{ 
       backgroundImage: `url(${backgroundImage})`,
       width: "100%",
       backgroundSize: "cover",
