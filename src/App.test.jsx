@@ -10,7 +10,23 @@ describe('App Component', () => {
         <App />
       </BrowserRouter>
     );
-    const linkElement = screen.getByText(/Welcome to BuddyBot - Learning Made Magical!/i);
-    expect(linkElement).toBeTruthy();
+    const linkElement = screen.getAllByText(/Welcome to BuddyBot - Learning Made Magical!/i);
+    expect(linkElement).not.toBeNull();
+  });
+
+ 
+  it('renders the Navbar component', () => {
+    render(
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    );
+    expect(screen.getAllByText(/Home/i)).not.toBeNull();
+    expect(screen.getAllByText(/Lesson/i)).not.toBeNull();
+    expect(screen.getAllByText(/Assignment/i)).not.toBeNull();
+    expect(screen.getAllByText(/Game/i)).not.toBeNull();
+    expect(screen.getAllByText(/Time Table/i)).not.toBeNull();
+    expect(screen.getAllByText(/Login/i)).not.toBeNull();
+    expect(screen.getAllByText(/SignUp/i)).not.toBeNull();
   });
 });
