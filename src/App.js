@@ -1,6 +1,5 @@
 import './App.css';
 import './Slideshow.css';
-// import ReactDOM from "react-dom/client";
 import { Routes, Route } from "react-router-dom";
 import React from 'react';
 import Header from "./header";
