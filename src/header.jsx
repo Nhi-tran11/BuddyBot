@@ -1,12 +1,14 @@
 import React from "react";
 import './header.css';
 import logo from "./image/logo.png";
+
+
 // import logo2 from "./image/kids-learning.jpg";
 import backgroundImage from "./image/colorful.webp"; 
 const Header = () => {
     return (
         <header >
-            <div class="header" style={{ 
+            <div className="header" style={{ 
       backgroundImage: `url(${backgroundImage})`,
       width: "100%",
       backgroundSize: "cover",
@@ -18,18 +20,8 @@ const Header = () => {
       color: "white"
     }}>
                 <img src={logo} alt="BuddyBot Logo"></img>
-                
-            </div>
-             
-            <div className="navbar" >
-                <a href="/">Home</a> 
-                <a href="/about">Lessson</a> 
-                <a href="/game">Game</a>
-                <a href="/assignment">Assignment</a>
-                <a href="/login" className="split" >LogIn</a>
-                <a href="/signUp" className="split" >SignUp</a>
-
-            </div>
+                </div>
+   
         </header>
     );
 };
