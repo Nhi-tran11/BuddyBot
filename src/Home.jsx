@@ -2,6 +2,7 @@ import React from "react";
 import logo1 from "./image/welcomelego.jpg";
 import Slideshow from "./slideshow";
 import CloudGroup from './cloudGroup';
+import GuidanceUse from "./GuidanceUse";
 
 function Home() {
   return (
@@ -16,6 +17,12 @@ function Home() {
         <div className='Slideshow'>
           <Slideshow />
           <CloudGroup />
+        </div>
+      </section>
+      <section className="GuidanceUse-section">
+        <div className="GuidanceUse">
+          <GuidanceUse />
+
         </div>
       </section>
     </main>
