@@ -31,7 +31,7 @@ function App() {
         <Route path="/game" element={<Game />} />
         <Route path="/lesson" element={<Lesson />} />
         <Route path="/assignment" element={<Assignment />} />
-        <Route path="/timetable" element={<TimeTable />} />
+        <Route path="/timetable" element={<TimeTable user={{ role: 'parent' }}/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
