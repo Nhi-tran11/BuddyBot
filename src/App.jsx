@@ -9,13 +9,13 @@ import Footer from "./footer";
 // import CloudGroup from './cloudGroup';
 import Navbar from './Navbar';
 // import Home from './App';
-import Assignment from './Asignment';
-import Game from './Game'
-import Login from './Login';
+import Assignment from './page/Asignment';
+import Game from './page/Game'
+import Login from './page/Login';
 import SignUp from './SignUp';
-import Home from './Home';
-import Lesson from './Lesson';
-import TimeTable from './TimeTable';
+import Home from './page/Home';
+import Lesson from './page/Lesson';
+import TimeTable from './page/TimeTable';
 
 function App() {
   return (
