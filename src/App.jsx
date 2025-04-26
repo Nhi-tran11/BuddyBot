@@ -12,10 +12,13 @@ import Navbar from './Navbar';
 import Assignment from './page/Asignment';
 import Game from './page/Game'
 import Login from './page/Login';
-import SignUp from './SignUp';
+import SignUp from './page/SignUp';
 import Home from './page/Home';
+import SignUpChild from './page/SignUpChild';
+
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
+// import { useState } from 'react';
 
 function App() {
   return (
@@ -34,6 +37,7 @@ function App() {
         <Route path="/timetable" element={<TimeTable />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/signupChild" element={<SignUpChild />} />
       </Routes>
     
 

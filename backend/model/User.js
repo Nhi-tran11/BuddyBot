@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const userSchema = new mongoose.Schema({
     username: {  // Fixed typo from 'usename'
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -11,8 +12,9 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
-        unique: true  // Fixed typo from 'unuque'
+        // required: true,
+        unique: false,  // Fixed typo from 'unuque'
+        required: function() { return this.role === 'parent'; }
     },
     role: {
         type: String,
@@ -23,15 +25,8 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: function() { return this.role === 'child'; }
-    },
-    childName: {
-        type: String,
-        required: function() { return this.role === 'child'; }
-    },
-    childAge: {
-        type: Number,
-        required: function() { return this.role === 'child'; }
     }
+
 }, {
     timestamps: true
 });

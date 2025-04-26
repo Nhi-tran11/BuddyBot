@@ -1,50 +1,45 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../services/authService';
+// import { loginUser } from '../services/authService';
 import '../Login.css';
+import { Link } from 'react-router-dom';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const Login = () => {
-    const [email, setEmail] = useState('');
+function Login () {
+    const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    // const [error, setError] = useState('');
+    // const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
+    const handleSubmit =  (e) => {
         e.preventDefault();
-        setError('');
-        setLoading(true);
+        axios.post('http://localhost:5000/login', { username, password })
+        .then(result => {
+            console.log(result);
+            if (result.data.message === 'Login successful') {
 
-        try {
-            const data = await loginUser({ email, password });
-            
-            // Redirect based on user role
-            if (data.user.role === 'parent') {
-                navigate('/dashboard');
-            } else if (data.user.role === 'child') {
-                navigate('/assignments');
-            }
-        } catch (err) {
-            setError(err.message || 'Failed to login');
-        } finally {
-            setLoading(false);
-        }
+            navigate('/');}
+        })
+        .catch(err => console.log(err));
+ 
     };
 
     return (
         <div className="login-container">
             <form className="login-form" onSubmit={handleSubmit}>
                 <h3>Login</h3>
-                {error && <div className="error-message">{error}</div>}
+                {/* {error && <div className="error-message">{error}</div>} */}
                 
                 <div className="form-group">
-                    <label>Email:</label>
+                    <label>UserName:</label>
                     <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        type="username"
+                        value={username}
+                        onChange={(e) => setUserName(e.target.value)}
                         required
-                        disabled={loading}
+                        // disabled={loading}
                     />
                 </div>
 
@@ -55,17 +50,18 @@ const Login = () => {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        disabled={loading}
+                        // disabled={loading}
                     />
                 </div>
 
                 <button 
                     type="submit" 
                     className="login-button"
-                    disabled={loading}
-                >
-                    {loading ? 'Logging in...' : 'Login'}
+                    // disabled={loading}
+                >LogIn
                 </button>
+                 <p>Haven't had an account yet</p>
+                      <Link to="/SignUp" className='btn-primary'>SignUp</Link>
             </form>
         </div>
     );
