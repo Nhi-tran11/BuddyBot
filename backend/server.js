@@ -267,4 +267,3 @@ function parseAIResponseToQuestions(aiResponse) {
 }
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
