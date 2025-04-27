@@ -11,19 +11,16 @@ function SignUp() {
 const [email, setEmail] = useState('');
 const [password, setPassword] = useState('');
 const [username, setUserName] = useState('');
+  const [loading, setLoading] = useState(false);
 const role = 'parent'; // Default role is 'parent'
 // const [role, setRole] = useState('parent'); // Default role is 'parent'
 const [error, setError] = useState(null);
 const navigate = useNavigate();
 const handleSubmit = async (e) => {
   e.preventDefault();
+  setLoading(true);
+ 
   try {
-    //  error=await axios.post('http://localhost:5000/signup', {email, username, password, role});
-    // // Remove the incorrect error assignment
-    // if (error) {
-    //   setError(error.response?.data?.message || 'An error occurred during sign up');
-    //   return; // Stop execution if there's an error
-    // }
      
     
     const result = await axios.post('http://localhost:5000/signup', {email, username, password, role});
@@ -47,6 +44,10 @@ const handleSubmit = async (e) => {
   } catch (err) {
     setError(err.response?.data?.message || 'An error occurred during sign up');
     console.log(err);
+  }
+  finally{
+    setLoading(false);
+
   }
   // console.log( email, password);
 }
@@ -82,8 +83,8 @@ const handleSubmit = async (e) => {
         required
       /></div>
       <div className='Submit'>
-      <button type="submit" className='SubmitButton'>
-      Sign Up</button>
+      <button type="submit" className='SubmitButton' disabled={loading}>
+      {loading ? 'Signing up...' : 'Sign Up'}</button>
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       </div>
       <p>Already have an account</p>

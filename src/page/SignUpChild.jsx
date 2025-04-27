@@ -10,6 +10,7 @@ function SignUpChild() {
   const role = 'child';
   const navigate = useNavigate();
   const location = useLocation();
+  const [error, setError] = useState(null);
   
   // Get parentId from router state or localStorage
   useEffect(() => {
@@ -30,36 +31,36 @@ function SignUpChild() {
     }
   }, [location, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Ensure we have a parentId before submission
-    if (!parentId) {
-      console.error("Missing parent ID");
-      return;
-    }
-    
-    // Log the data being sent for debugging
-    console.log("Sending data:", { username, password, role, parentId });
-    
-    axios.post('http://localhost:5000/signupChild', { 
-      username, 
-      password, 
-      role, 
-      parentId: parentId.toString() // Ensure parentId is a string
-    })
-      .then(result => {
-        console.log(result);
-        // Clear the parentId from localStorage after successful child signup
-        localStorage.removeItem('parentId');
-        navigate('/Login');
-      })
-      .catch(err => {
-        console.log(err);
-        // Show more detailed error information
-        if (err.response) {
-          console.log("Server response:", err.response.data);
-        }
+    setError('');
+    try {
+      // Ensure we have a parentId before submission
+      if (!parentId) {
+        console.error("Missing parent ID");
+        return;
+      }
+      
+      // Log the data being sent for debugging
+      console.log("Sending data:", { username, password, role, parentId });
+      
+      const response = await axios.post('http://localhost:5000/signupChild', { 
+        username, 
+        password, 
+        role, 
+        parentId: parentId.toString() // Ensure parentId is a string
       });
+      
+      console.log(response);
+      if (response.data.message === 'Child account created successfully') {
+        localStorage.removeItem('parentId');
+        navigate('/');
+      }
+    }
+    catch (err) {
+      console.log(err);
+      setError(err.response?.data?.message || 'An error occurred during LogIn');
+  }
   }
   
   return (
@@ -93,9 +94,11 @@ function SignUpChild() {
             type="submit" 
             className='SubmitButton'
             disabled={!parentId}
+           
           >
             Sign Up
           </button>
+          {error && <p style={{ color: 'red' }}>Error: {error}</p>}
         </div>
       </form>
     </div>

@@ -9,21 +9,24 @@ import axios from 'axios';
 function Login () {
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
-    // const [error, setError] = useState('');
+    const [error, setError] = useState('');
     // const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit =  (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5000/login', { username, password })
-        .then(result => {
-            console.log(result);
-            if (result.data.message === 'Login successful') {
-
-            navigate('/');}
-        })
-        .catch(err => console.log(err));
- 
+        setError('');
+        try {
+            const response = await axios.post('http://localhost:5000/login', { username, password });
+            console.log(response);
+            if (response.data.message === 'Login successful') {
+                navigate('/');
+            }
+        }  
+        catch (err) {
+            console.log(err);
+            setError(err.response?.data?.message || 'An error occurred during LogIn');
+        }
     };
 
     return (
@@ -60,6 +63,7 @@ function Login () {
                     // disabled={loading}
                 >LogIn
                 </button>
+                {error && <p style={{ color: 'red' }}>Error: {error}</p>}
                  <p>Haven't had an account yet</p>
                       <Link to="/SignUp" className='btn-primary'>SignUp</Link>
             </form>
