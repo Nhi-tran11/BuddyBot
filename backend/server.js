@@ -2,27 +2,17 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
-// const expressSession = require('express-session');
 const User = require('./model/User');
 const app = express();
-const Assignment = require('./model/Assignment'); // Fixed incorrect import
+const Assignment = require('./model/Assignment');
 const session = require('express-session');
 
 // Middleware
 app.use(cors({
-    origin: ['*', 'http://localhost:5173'], // Replace with your frontend URL
+    origin: ['*', 'http://localhost:5173'], 
     credentials: true
 }));
 app.use(express.json());
-
-// Set up session middleware
-// app.use(expressSession({
-//     secret: 'your_secret_key',
-//     resave: false,
-//     name: 'buddybot-session',
-//     saveUninitialized: true
-// }));
-// const session = require('express-session');
 
 
 app.use(session({
@@ -33,19 +23,6 @@ app.use(session({
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   }
 }));
-// // Middleware to log session data
-// app.use((req,res) => {
-//     console.log('Session:', req.session);
-//     res.send('Session logged in console');
-// });
-
-// // Routes
-// const userRoutes = require('./routes/User');
-// const assignmentRoutes = require('./routes/Assignment'); // Fixed incorrect import
-
-// Mount routes
-// app.use('/api/users', userRoutes);
-// app.use('/api/assignments', assignmentRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
@@ -96,7 +73,7 @@ app.post('/signupChild', (req, res) => {
         return User.create({
             ...req.body,
             role: 'child',  // Ensure the role is set as child
-    // First create the child account
+  
         });
     })
   
@@ -140,7 +117,31 @@ app.post('/signup', (req, res) => {
         }
     });
 })
-
+app.get('/session/user-children', async (req, res) => {
+    try {
+        // Check if user is logged in
+        if (!req.session || !req.session.user) {
+            return res.status(401).json({ message: 'Please log in first' });
+        }
+        // Check if user is a parent
+        if (req.session.user.role !== 'parent') {
+            return res.status(403).json({ message: 'Only parents can view their children' });
+        }
+        // Find children linked to the logged-in parent
+        const children = await User.find({ parentId: req.session.user._id });
+        // Store children in session for easy access from frontend
+        req.session.children = children.map(child => ({
+            _id: child._id,
+            username: child.username,
+            role: child.role
+        }));
+        // Send the children data back to the client
+        res.status(200).json({ children: req.session.children });
+    } catch (err) {
+        console.error('Error fetching children:', err);
+        res.status(500).json({ error: err.message });
+    }
+});
 // AI-Generated Assignment endpoint
 app.post('/ai-assignment', async (req, res) => {
     try {
@@ -153,7 +154,7 @@ app.post('/ai-assignment', async (req, res) => {
         if (req.session.user.role !== 'parent') {
             return res.status(403).json({ message: 'Only parents can create assignments' });
         }
-
+            
         
         // Basic validation
         if (!prompt || !assignedTo || !dueDate) {
@@ -197,21 +198,7 @@ app.post('/ai-assignment', async (req, res) => {
 async function callLLMService(prompt) {
     // This is a placeholder. In production, you'd connect to OpenAI or another LLM provider
     try {
-        // Example using OpenAI-like API (you'll need to replace with actual implementation)
-        /*
-        const response = await axios.post('https://api.openai.com/v1/completions', {
-            model: 'gpt-3.5-turbo',
-            prompt: prompt,
-            max_tokens: 1000,
-            temperature: 0.7
-        }, {
-            headers: {
-                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        return response.data.choices[0].text;
-        */
+        
         
         // For demonstration, return a mock response
         return `

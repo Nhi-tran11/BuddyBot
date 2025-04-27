@@ -10,7 +10,6 @@ function Login () {
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    // const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -47,7 +46,6 @@ function Login () {
         <div className="login-container">
             <form className="login-form" onSubmit={handleSubmit}>
                 <h3>Login</h3>
-                {/* {error && <div className="error-message">{error}</div>} */}
                 
                 <div className="form-group">
                     <label>UserName:</label>
@@ -56,7 +54,7 @@ function Login () {
                         value={username}
                         onChange={(e) => setUserName(e.target.value)}
                         required
-                        // disabled={loading}
+  
                     />
                 </div>
 
@@ -67,14 +65,12 @@ function Login () {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         required
-                        // disabled={loading}
                     />
                 </div>
 
                 <button 
                     type="submit" 
                     className="login-button"
-                    // disabled={loading}
                 >LogIn
                 </button>
                 {error && <p style={{ color: 'red' }}>Error: {error}</p>}
