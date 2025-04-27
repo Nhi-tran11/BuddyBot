@@ -3,45 +3,45 @@ const User = require('../model/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Login route
-router.post('/login', async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        console.log('Login attempt:', email);
+// // Login route
+// router.post('/login', async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
+//         console.log('Login attempt:', email);
 
-        // For testing purposes, use mock data
-        const mockUser = {
-            _id: 'mockParentId456',
-            role: 'parent',
-            username: 'ParentUser',
-            email: email,
-            password: 'hashedPassword'
-        };
+//         // For testing purposes, use mock data
+//         const mockUser = {
+//             _id: 'mockParentId456',
+//             role: 'parent',
+//             username: 'ParentUser',
+//             email: email,
+//             password: 'hashedPassword'
+//         };
 
-        // Create session
-        req.session.userId = mockUser._id;
-        req.session.userRole = mockUser.role;
+//         // Create session
+//         req.session.userId = mockUser._id;
+//         req.session.userRole = mockUser.role;
 
-        // Create token
-        const token = jwt.sign(
-            { id: mockUser._id, role: mockUser.role },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
-        );
+//         // Create token
+//         const token = jwt.sign(
+//             { id: mockUser._id, role: mockUser.role },
+//             process.env.JWT_SECRET,
+//             { expiresIn: '1d' }
+//         );
 
-        res.json({
-            token,
-            user: {
-                id: mockUser._id,
-                role: mockUser.role,
-                username: mockUser.username
-            }
-        });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
+//         res.json({
+//             token,
+//             user: {
+//                 id: mockUser._id,
+//                 role: mockUser.role,
+//                 username: mockUser.username
+//             }
+//         });
+//     } catch (error) {
+//         console.error('Login error:', error);
+//         res.status(500).json({ message: 'Server error' });
+//     }
+// });
 
 // Register route
 router.post('/register', async (req, res) => {

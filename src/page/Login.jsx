@@ -17,7 +17,21 @@ function Login () {
         e.preventDefault();
         setError('');
         try {
-            const response = await axios.post('http://localhost:5000/login', { username, password });
+            const response = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include', // Include credentials in the request
+                body: JSON.stringify({ username, password })
+            });
+            
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
+            
+            const data = await response.json();
+            response.data = data; // To maintain compatibility with existing code
             console.log(response);
             if (response.data.message === 'Login successful') {
                 navigate('/');

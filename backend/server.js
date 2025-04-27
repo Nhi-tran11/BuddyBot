@@ -2,29 +2,46 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
-const session = require('express-session');
+// const expressSession = require('express-session');
 const User = require('./model/User');
 const app = express();
 const Assignment = require('./model/Assignment'); // Fixed incorrect import
+const session = require('express-session');
 
 // Middleware
-app.use(cors());
+app.use(cors({
+    origin: ['*', 'http://localhost:5173'], // Replace with your frontend URL
+    credentials: true
+}));
 app.use(express.json());
 
-// Session middleware
-app.use(session({
-    secret: process.env.JWT_SECRET || 'your-secret-key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    }
-}));
+// Set up session middleware
+// app.use(expressSession({
+//     secret: 'your_secret_key',
+//     resave: false,
+//     name: 'buddybot-session',
+//     saveUninitialized: true
+// }));
+// const session = require('express-session');
 
-// Routes
-const userRoutes = require('./routes/User');
-const assignmentRoutes = require('./routes/Assignment'); // Fixed incorrect import
+
+app.use(session({
+  secret: 'your_secret_key',
+  resave: true,
+  saveUninitialized: true,
+  cookie: { 
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+}));
+// // Middleware to log session data
+// app.use((req,res) => {
+//     console.log('Session:', req.session);
+//     res.send('Session logged in console');
+// });
+
+// // Routes
+// const userRoutes = require('./routes/User');
+// const assignmentRoutes = require('./routes/Assignment'); // Fixed incorrect import
 
 // Mount routes
 // app.use('/api/users', userRoutes);
@@ -37,30 +54,36 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const PORT = process.env.PORT;
 
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    User.findOne({ username})
-    .then(user => {
+
+    try {
+        const user = await User.findOne({ username });
+        // Check if the user exists
         if (user) {
-            if(user.password === password) {
-                return res.json({ message: 'Login successful', user });
+            // Check if the password is correct
+            if (user.password === password) {
+                // Store user info in session
+                req.session.user = user;
+                req.session.save(err => {
+                    if (err) console.error('Session save error:', err);
+                    console.log('Session:', req.session);
+                    console.log('Session:', req.session.id);
+                    return res.json({ message: 'Login successful', user: { username: user.username, role: user.role } });
+                });
+            } else {
+                return res.status(400).json({ message: 'Password is incorrect' });
             }
-            else{
-                return Promise.reject({status:400,  message: 'Password is incorrect' });
-            }
-        }
-        else{
-            return Promise.reject({status:400,  message: 'User not found' });
-        }
-    })
-    .catch(err => {
-        if (err.status) {
-            res.status(err.status).json({ message: err.message });
         } else {
-            res.status(500).json({ message: 'An error occurred during login' });
+            return res.status(400).json({ message: 'User not found' });
         }
-    });
+    } catch (err) {
+        console.error('Login error:', err);
+        return res.status(500).json({ message: 'Server error during login' });
+    }
 })
+
+
 app.post('/signupChild', (req, res) => {
     // const { username, password } = req.body;
     const {username, password} = req.body;
@@ -117,59 +140,52 @@ app.post('/signup', (req, res) => {
         }
     });
 })
-// Add this after your existing endpoints
-
-const axios = require('axios'); // Add this at the top of your file with other imports
 
 // AI-Generated Assignment endpoint
 app.post('/ai-assignment', async (req, res) => {
     try {
-        const { username, prompt, assignedTo, assignedBy, subject, ageRange, dueDate } = req.body;
-       
-        // Check if user is logged in
-        User.findOne({ username })
-        .then(loggedInUser => {
-            if (!loggedInUser) {
-                return res.status(401).json({ message: 'Please log in to create assignment' });
-            }
-            const { username, prompt, assignedTo, assignedBy, subject, ageRange, dueDate } = req.body;
+        const { prompt, assignedTo, subject, ageRange, dueDate } = req.body;
+    
+    // Check if logged in user has parent role
+    if (!req.session || !req.session.user) {
+        return res.status(401).json({ message: 'Please log in first' });
+    }
+        if (req.session.user.role !== 'parent') {
+            return res.status(403).json({ message: 'Only parents can create assignments' });
+        }
+
         
-            // Basic validation
-            if (!prompt || !assignedTo || !assignedBy || !dueDate) {
-                return res.status(400).json({ message: 'Missing required fields' });
-            }
-            // Format prompt for the AI
-            const formattedPrompt = `Generate ${subject || 'learning'} questions for a child in the age range ${ageRange || '6-8'}. ${prompt}`;
-            
-            // Call LLM service to generate content
-            return callLLMService(formattedPrompt)
-                .then(aiResponse => {
-                    // Parse the AI response into structured questions
-                    const questions = parseAIResponseToQuestions(aiResponse);
-                    
-                    // Create the assignment in the database
-                    return Assignment.create({
-                        title: `AI Assignment: ${subject || prompt.substring(0, 30)}...`,
-                        description: `Generated from prompt: "${prompt}"`,
-                        questions: questions,
-                        assignedTo,
-                        assignedBy,
-                        dueDate: new Date(dueDate),
-                        subject: subject || 'other',
-                        ageRange: ageRange || '6-8',
-                        aiGenerated: true,
-                        aiPrompt: prompt
-                    });
-                })
-                .then(assignment => {
-                    res.status(201).json({ 
-                        message: 'AI assignment created successfully', 
-                        assignment 
-                    });
-                });
-        })
-        .catch(err => {
-            throw err;
+        // Basic validation
+        if (!prompt || !assignedTo || !dueDate) {
+            return res.status(400).json({ message: 'Missing required fields' });
+        }
+        
+        // Format prompt for the AI
+        const formattedPrompt = `Generate ${subject || 'learning'} questions for a child in the age range ${ageRange || '6-8'}. ${prompt}`;
+        
+        // Call LLM service to generate content
+        const aiResponse = await callLLMService(formattedPrompt);
+        
+        // Parse the AI response into structured questions
+        const questions = parseAIResponseToQuestions(aiResponse);
+        
+        // Create the assignment in the database
+        const assignment = await Assignment.create({
+            title: `AI Assignment: ${subject || prompt.substring(0, 30)}...`,
+            description: `Generated from prompt: "${prompt}"`,
+            questions: questions,
+            assignedTo,
+            assignedBy: req.session.user.username, // Get username from session
+            dueDate: new Date(dueDate),
+            subject: subject || 'other',
+            ageRange: ageRange || '6-8',
+            aiGenerated: true,
+            aiPrompt: prompt
+        });
+        
+        res.status(201).json({ 
+            message: 'AI assignment created successfully', 
+            assignment 
         });
     } catch (err) {
         console.error('Error creating AI assignment:', err);

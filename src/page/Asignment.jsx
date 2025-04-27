@@ -23,20 +23,28 @@ function Assignment({ onAssignmentCreated }) {
         
         try {
             // Check if user is logged in
-            if (!parentId) {
-                throw new Error('You must be logged in to create assignments');
-            }
+            // if (!parentId) {
+            //     throw new Error('You must be logged in to create assignments');
+            // }
             
             const dueDate = new Date();
             dueDate.setDate(dueDate.getDate() + 7); // Default due date: 1 week
             
-            const response = await axios.post('http://localhost:5000/ai-assignment', {
-                prompt,
-                subject,
-                ageRange,
-                assignedTo: childId,
-                assignedBy: parentId,
-                dueDate: dueDate.toISOString()
+            const response = await fetch('http://localhost:5000/ai-assignment', {
+                method: 'POST',
+                credentials: 'include', // This will include credentials in the request
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    prompt,
+                    subject,
+                    ageRange,
+                    assignedTo: childId,
+                    assignedBy: parentId,
+                    dueDate: dueDate.toISOString()
+                })
             });
             
             setPrompt('');
