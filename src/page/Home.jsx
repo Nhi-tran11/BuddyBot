@@ -1,8 +1,8 @@
 import React from "react";
-import logo1 from "./image/welcomelego.jpg";
-import Slideshow from "./slideshow";
-import CloudGroup from './cloudGroup';
-import GuidanceUse from "./GuidanceUse";
+import logo1 from "../image/welcomelego.jpg";
+import Slideshow from "../slideshow";
+import CloudGroup from '../cloudGroup';
+import GuidanceUse from "../GuidanceUse";
 
 function Home() {
   return (
