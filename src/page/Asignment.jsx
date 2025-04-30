@@ -4,6 +4,7 @@ import "../Assignment.css";
 import { Link } from "react-router-dom";
 
 
+
 function Assignment({ onAssignmentCreated }) {
 
     const [prompt, setPrompt] = useState('');
@@ -58,6 +59,7 @@ function Assignment({ onAssignmentCreated }) {
             if (!prompt) {
                 throw new Error('Prompt cannot be empty');
             }
+
             const dueDate = new Date();
             dueDate.setDate(dueDate.getDate() + 7); // Default due date: 1 week
             
@@ -88,7 +90,6 @@ function Assignment({ onAssignmentCreated }) {
             setLoading(false);
         }
     };
-    
 
     return (
         <div className="ai-assignment-form">
@@ -120,6 +121,7 @@ function Assignment({ onAssignmentCreated }) {
                         <option value="13+">13+ years</option>
                     </select>
                 </div>
+
                 <div className="form-group">
                     <label>Prompt for AI (e.g., "10 addition problems" or "spelling practice"):</label>
                     <textarea 
@@ -129,14 +131,16 @@ function Assignment({ onAssignmentCreated }) {
                         placeholder="Generate 5 simple addition problems using numbers 1-10"
                     />
                 </div>
-          
+
                 <button type="submit" disabled={loading || !prompt}>
                     {loading ? 'Generating...' : 'Create Assignment'}
                 </button>
             </form>
         </div>
+
     );
 }
+
 
  
 export default Assignment;

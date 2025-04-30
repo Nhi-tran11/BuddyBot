@@ -25,6 +25,7 @@ function SignUpChild() {
         setParentId(storedParentId);
       } else {
         console.error("No parent ID found");
+
       }
     }
   }, [location, navigate]);
@@ -38,7 +39,7 @@ function SignUpChild() {
         console.error("Missing parent ID");
         return;
       }
-  
+
       console.log("Sending data:", { username, password, role, parentId });
       
       const response = await axios.post('http://localhost:5000/signupChild', { 

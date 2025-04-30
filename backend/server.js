@@ -5,6 +5,7 @@ require('dotenv').config();
 const User = require('./model/User');
 const app = express();
 const Assignment = require('./model/Assignment');
+
 const session = require('express-session');
 
 // Middleware
@@ -13,7 +14,6 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
-
 
 app.use(session({
   secret: 'your_secret_key',
@@ -73,7 +73,6 @@ app.post('/signupChild', (req, res) => {
         return User.create({
             ...req.body,
             role: 'child',  // Ensure the role is set as child
-  
         });
     })
   
@@ -142,6 +141,7 @@ app.get('/session/user-children', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 // AI-Generated Assignment endpoint
 app.post('/ai-assignment', async (req, res) => {
     try {
@@ -154,7 +154,6 @@ app.post('/ai-assignment', async (req, res) => {
         if (req.session.user.role !== 'parent') {
             return res.status(403).json({ message: 'Only parents can create assignments' });
         }
-            
         
         // Basic validation
         if (!prompt || !assignedTo || !dueDate) {
@@ -198,8 +197,6 @@ app.post('/ai-assignment', async (req, res) => {
 async function callLLMService(prompt) {
     // This is a placeholder. In production, you'd connect to OpenAI or another LLM provider
     try {
-        
-        
         // For demonstration, return a mock response
         return `
         1. What is 2 + 3?
