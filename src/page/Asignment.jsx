@@ -3,30 +3,63 @@ import axios from "axios";
 import "../Assignment.css";
 import { Link } from "react-router-dom";
 
-// Example component to add to your Assignment.jsx page
+
+
 function Assignment({ onAssignmentCreated }) {
-// const Assignment = ({ onAssignmentCreated }) => {
+
     const [prompt, setPrompt] = useState('');
     const [subject, setSubject] = useState('math');
     const [ageRange, setAgeRange] = useState('6-8');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [children, setChildren] = useState([]);
+    const [parentId, setParentId] = useState('');
     const [childId, setChildId] = useState('');
-    
-    // Assume you have the user ID from auth
-    const parentId = localStorage.getItem('userId');
-    
+   
+    // Fetch children when component mounts
+    useEffect(() => {
+        const fetchChildren = async () => {
+            try {
+      
+                // Fetch children from session/user endpoint
+                const childrenResponse = await fetch('http://localhost:5000/session/user-children', {
+                    credentials: 'include' // Include cookies for session authentication
+                });
+                const childrenData = await childrenResponse.json();
+                setChildren(childrenData.children);
+                
+            } catch (err) {
+                console.error('Failed to fetch children:', err);
+                setError('Failed to load children');
+            }
+        };
+        
+        fetchChildren();
+    }, [parentId]);
+
+    // Set the first child as default when children are loaded
+    useEffect(() => {
+        if (Array.isArray(children) && children.length > 0 && !childId) {
+            setChildId(children[0]._id);
+        }
+    }, [children, childId]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
         
         try {
-            // Check if user is logged in
-            // if (!parentId) {
-            //     throw new Error('You must be logged in to create assignments');
-            // }
+      
+            if (!childId) {
+                throw new Error('Please select a child');
+            }
             
+            // Check if prompt is empty
+            if (!prompt) {
+                throw new Error('Prompt cannot be empty');
+            }
+
             const dueDate = new Date();
             dueDate.setDate(dueDate.getDate() + 7); // Default due date: 1 week
             
@@ -57,7 +90,7 @@ function Assignment({ onAssignmentCreated }) {
             setLoading(false);
         }
     };
-    
+
     return (
         <div className="ai-assignment-form">
             <h3>Generate an Assignment with AI</h3>
@@ -69,13 +102,16 @@ function Assignment({ onAssignmentCreated }) {
                     <select value={subject} onChange={e => setSubject(e.target.value)}>
                         <option value="math">Math</option>
                         <option value="english">English</option>
-                        <option value="science">Science</option>
-                        <option value="history">History</option>
-                        <option value="art">Art</option>
-                        <option value="other">Other</option>
+                    </select>
+                    <label>Assign to Child:</label>
+                    <select value={childId} onChange={e => setChildId(e.target.value)} required>
+                        {Array.isArray(children) && children.map((child) => (
+                            <option key={child._id} value={child._id}>
+                                {child.name || child.username}
+                            </option>
+                        ))}
                     </select>
                 </div>
-                
                 <div className="form-group">
                     <label>Age Range:</label>
                     <select value={ageRange} onChange={e => setAgeRange(e.target.value)}>
@@ -85,7 +121,7 @@ function Assignment({ onAssignmentCreated }) {
                         <option value="13+">13+ years</option>
                     </select>
                 </div>
-                
+
                 <div className="form-group">
                     <label>Prompt for AI (e.g., "10 addition problems" or "spelling practice"):</label>
                     <textarea 
@@ -95,13 +131,16 @@ function Assignment({ onAssignmentCreated }) {
                         placeholder="Generate 5 simple addition problems using numbers 1-10"
                     />
                 </div>
-                
+
                 <button type="submit" disabled={loading || !prompt}>
                     {loading ? 'Generating...' : 'Create Assignment'}
                 </button>
             </form>
         </div>
-)}
+
+    );
+}
+
 
  
 export default Assignment;
