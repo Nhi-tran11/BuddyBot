@@ -26,20 +26,20 @@ function Login () {
                 body: JSON.stringify({ username, password })
             });
             
+            const data = await response.json();
+            
             if (!response.ok) {
-                throw new Error('Login failed');
+                throw new Error(data.message || 'Login failed');
             }
             
-            const data = await response.json();
-            response.data = data; // To maintain compatibility with existing code
-            console.log(response);
-            if (response.data.message === 'Login successful') {
+            console.log(data);
+            if (data.message === 'Login successful') {
                 navigate('/');
             }
         }  
         catch (err) {
             console.log(err);
-            setError(err.response?.data?.message || 'An error occurred during LogIn');
+            setError(err.message || 'An error occurred during LogIn');
         }
     };
 
