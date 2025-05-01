@@ -11,6 +11,7 @@ import Login from './page/Login';
 import SignUp from './page/SignUp';
 import Home from './page/Home';
 import SignUpChild from './page/SignUpChild';
+import ShowAssignment from './page/ShowAssignment';
 
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
@@ -32,6 +33,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signupChild" element={<SignUpChild />} />
+        <Route path="/ShowAssignment" element={<ShowAssignment />} />
       </Routes>
     
 
