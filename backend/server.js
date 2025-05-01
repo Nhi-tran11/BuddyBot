@@ -116,6 +116,7 @@ app.post('/signup', (req, res) => {
         }
     });
 })
+
 app.get('/session/current-user', (req, res) => {
     if (!req.session || !req.session.user) {
         return res.status(401).json({ message: 'Please log in first' });
@@ -131,6 +132,7 @@ app.get('/session/current-user', (req, res) => {
         isLoggedIn: true
     });
 })
+
 app.get('/session/user-children', async (req, res) => {
     try {
         // Check if user is logged in
@@ -138,7 +140,6 @@ app.get('/session/user-children', async (req, res) => {
             return res.status(401).json({ message: 'Please log in first' });
         }
 
-      
         // Find children linked to the logged-in parent
         const children = await User.find({ parentId: req.session.user._id });
 
@@ -149,8 +150,14 @@ app.get('/session/user-children', async (req, res) => {
             message: "You don't have any child accounts yet. Please sign up a child account first."
             });
         }
+        // Check if user is a parent
+        if (req.session.user.role !== 'parent') {
+            return res.status(403).json({ message: 'Only parents can view their children' });
+        }
+        // Find children linked to the logged-in parent
+        const children = await User.find({ parentId: req.session.user._id });
+        // Store children in session for easy access from frontend
 
-        // Store children in session if they exist
         req.session.children = children.map(child => ({
             _id: child._id,
             username: child.username,

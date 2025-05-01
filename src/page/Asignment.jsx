@@ -4,7 +4,6 @@ import "../Assignment.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 
-
 function Assignment({ onAssignmentCreated }) {
 
     const [prompt, setPrompt] = useState('');
@@ -53,6 +52,7 @@ function Assignment({ onAssignmentCreated }) {
         
         fetchUserData();
     }, []);
+
 
     // Set the first child as default when children are loaded
     useEffect(() => {
@@ -107,7 +107,6 @@ function Assignment({ onAssignmentCreated }) {
             setLoading(false);
         }
     };
-
 
     return (
         <div className="ai-assignment-container">
