@@ -16,8 +16,6 @@ function Assignment({ onAssignmentCreated }) {
     const [childId, setChildId] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
     const navigate = useNavigate();
-
-    // Fetch children when component mounts
     useEffect(() => {
         const fetchUserData = async () => {
             try {
@@ -148,49 +146,13 @@ function Assignment({ onAssignmentCreated }) {
                             placeholder="Generate 5 simple addition problems using numbers 1-10"
                         />
                     </div>
-            
-            <form onSubmit={handleSubmit}>
-                <div className="form-group">
-                    <label>Subject:</label>
-                    <select value={subject} onChange={e => setSubject(e.target.value)}>
-                        <option value="math">Math</option>
-                        <option value="english">English</option>
-                    </select>
-                    <label>Assign to Child:</label>
-                    <select value={childId} onChange={e => setChildId(e.target.value)} required>
-                        {Array.isArray(children) && children.map((child) => (
-                            <option key={child._id} value={child._id}>
-                                {child.name || child.username}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label>Age Range:</label>
-                    <select value={ageRange} onChange={e => setAgeRange(e.target.value)}>
-                        <option value="3-5">3-5 years</option>
-                        <option value="6-8">6-8 years</option>
-                        <option value="9-12">9-12 years</option>
-                        <option value="13+">13+ years</option>
-                    </select>
-                </div>
-
-                <div className="form-group">
-                    <label>Prompt for AI (e.g., "10 addition problems" or "spelling practice"):</label>
-                    <textarea 
-                        value={prompt}
-                        onChange={e => setPrompt(e.target.value)}
-                        required
-                        placeholder="Generate 5 simple addition problems using numbers 1-10"
-                    />
-                </div>
-
-                <button type="submit" disabled={loading || !prompt}>
-                    {loading ? 'Generating...' : 'Create Assignment'}
-                </button>
-            </form>
+                    
+                    <button type="submit" disabled={loading || !prompt}>
+                        {loading ? 'Generating...' : 'Create Assignment'}
+                    </button>
+                </form>
+            </div>
         </div>
-
     );
 }
 

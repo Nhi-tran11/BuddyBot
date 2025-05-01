@@ -154,8 +154,6 @@ app.get('/session/user-children', async (req, res) => {
         if (req.session.user.role !== 'parent') {
             return res.status(403).json({ message: 'Only parents can view their children' });
         }
-        // Find children linked to the logged-in parent
-        const children = await User.find({ parentId: req.session.user._id });
         // Store children in session for easy access from frontend
 
         req.session.children = children.map(child => ({
