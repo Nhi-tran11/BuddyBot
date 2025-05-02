@@ -34,9 +34,11 @@ function Login () {
             
             console.log(data);
             if (data.message === 'Login successful') {
+
                 localStorage.setItem('user', data.user);
                 
                 navigate('/', { state: { user: data.user } });
+
             }
         }  
         catch (err) {

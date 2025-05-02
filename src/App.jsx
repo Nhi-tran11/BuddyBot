@@ -12,7 +12,9 @@ import SignUp from './page/SignUp';
 import Home from './page/Home';
 import SignUpChild from './page/SignUpChild';
 import ShowAssignment from './page/ShowAssignment';
+
 import LogOut from './page/LogOut';
+
 
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
@@ -39,6 +41,8 @@ function App() {
         <Route path="/game" element={<Game />} />
         <Route path="/lesson" element={<Lesson />} />
         <Route path="/timetable" element={<TimeTable />} />
+        
+
       </Routes>
   
       <Footer />

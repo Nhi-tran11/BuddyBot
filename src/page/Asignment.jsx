@@ -23,6 +23,7 @@ function Assignment({ onAssignmentCreated }) {
                 const userResponse = await fetch('http://localhost:5000/session/current-user', {
                     credentials: 'include' // Include cookies for session authentication
                 });
+
                 
                 if (!userResponse.ok) {
                     const errorData = await userResponse.json();
@@ -35,6 +36,7 @@ function Assignment({ onAssignmentCreated }) {
                     throw new Error('No user data received');
                 }
                 
+
                 setCurrentUser(userData.user);
                 
                 // Check user role
@@ -45,11 +47,12 @@ function Assignment({ onAssignmentCreated }) {
                     const childrenResponse = await fetch('http://localhost:5000/session/user-children', {
                         credentials: 'include'
                     });
+
                     
                     if (!childrenResponse.ok) {
                         throw new Error(`Failed to fetch children: ${childrenResponse.status}`);
                     }
-                    
+
                     const childrenData = await childrenResponse.json();
                     setChildren(childrenData.children);
                 } else if (userData.user.role === 'child') {
@@ -57,6 +60,7 @@ function Assignment({ onAssignmentCreated }) {
                     // For child users, we don't need to fetch children
                     navigate('/ShowAssignment');
                 }
+
       
             }
             catch (error) {
@@ -66,6 +70,7 @@ function Assignment({ onAssignmentCreated }) {
                 setTimeout(() => {
                     navigate('/login'); // Redirect to login page after showing the error message
                 }, 4000);
+
             }
         };
         
