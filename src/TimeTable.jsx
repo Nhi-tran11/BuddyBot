@@ -1,63 +1,91 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import "./TimeTable.css";
 
-const Timetable = ({ user }) => {
-  const [timetable, setTimetable] = useState([
-    { id: 1, day: 'Monday', time: '10:00 AM', subject: 'Math' },
-    { id: 2, day: 'Tuesday', time: '11:00 AM', subject: 'Science' },
-  ]);
+const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+const times = ["09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM"];
+const subjects = ["Math", "English", "Science", "General Knowledge"];
 
-  const [newEntry, setNewEntry] = useState({ day: '', time: '', subject: '' });
+const TimeTable = () => {
+  const [tableData, setTableData] = useState({});
 
   const handleAdd = () => {
-    const id = Date.now();
-    setTimetable([...timetable, { id, ...newEntry }]);
-    setNewEntry({ day: '', time: '', subject: '' });
+    let day = prompt("Enter Day (e.g., Monday):").trim();
+    let time = prompt("Enter Time (e.g., 11:00 AM):").trim();
+    let subject = prompt("Enter Subject (Math, English, Science, General Knowledge):").trim();
+
+    // Normalize casing
+    day = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
+    subject = subject.charAt(0).toUpperCase() + subject.slice(1).toLowerCase();
+
+    // Allow short version for General Knowledge
+    if (subject === "Gk") subject = "General Knowledge";
+
+    const validDay = days.includes(day);
+    const validTime = times.includes(time);
+    const validSubject = subjects.includes(subject);
+
+    if (validDay && validTime && validSubject) {
+      setTableData(prev => ({
+        ...prev,
+        [day + time]: subject,
+      }));
+    } else {
+      alert("❌ Invalid input. Make sure day/time/subject match available options.");
+    }
   };
 
-  const handleDelete = (id) => {
-    setTimetable(timetable.filter(entry => entry.id !== id));
+  const handleRemove = () => {
+    let day = prompt("Enter Day to remove (e.g., Tuesday):").trim();
+    let time = prompt("Enter Time to remove (e.g., 10:00 AM):").trim();
+
+    day = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
+
+    const validDay = days.includes(day);
+    const validTime = times.includes(time);
+
+    if (validDay && validTime) {
+      setTableData(prev => {
+        const updated = { ...prev };
+        delete updated[day + time];
+        return updated;
+      });
+    } else {
+      alert("❌ Invalid input. Please check your Day and Time.");
+    }
   };
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h2>{user.role === 'parent' ? 'Manage Timetable' : 'Your Timetable'}</h2>
+    <div className="timetable-container">
+      <h1>School Timetable</h1>
+      <table className="timetable">
+        <thead>
+          <tr>
+            <th>Time / Day</th>
+            {days.map(day => (
+              <th key={day}>{day}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {times.map(time => (
+            <tr key={time}>
+              <td>{time}</td>
+              {days.map(day => (
+                <td key={day + time}>
+                  {tableData[day + time] || ""}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
-      <ul>
-        {timetable.map(entry => (
-          <li key={entry.id}>
-            {entry.day} - {entry.time} - {entry.subject}
-            {user.role === 'parent' && (
-              <button onClick={() => handleDelete(entry.id)} style={{ marginLeft: '10px' }}>
-                Delete
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-
-      {user.role === 'parent' && (
-        <div style={{ marginTop: '20px' }}>
-          <h3>Add Activity</h3>
-          <input
-            placeholder="Day"
-            value={newEntry.day}
-            onChange={(e) => setNewEntry({ ...newEntry, day: e.target.value })}
-          />
-          <input
-            placeholder="Time"
-            value={newEntry.time}
-            onChange={(e) => setNewEntry({ ...newEntry, time: e.target.value })}
-          />
-          <input
-            placeholder="Subject"
-            value={newEntry.subject}
-            onChange={(e) => setNewEntry({ ...newEntry, subject: e.target.value })}
-          />
-          <button onClick={handleAdd}>Add</button>
-        </div>
-      )}
+      <div className="button-row">
+        <button onClick={handleAdd}>Add</button>
+        <button onClick={handleRemove}>Remove</button>
+      </div>
     </div>
   );
 };
 
-export default Timetable;
+export default TimeTable;
