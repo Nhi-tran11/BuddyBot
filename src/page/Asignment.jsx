@@ -23,7 +23,17 @@ function Assignment({ onAssignmentCreated }) {
                 const userResponse = await fetch('http://localhost:5000/session/current-user', {
                     credentials: 'include' // Include cookies for session authentication
                 });
+                
+                if (!userResponse.ok) {
+                    const errorData = await userResponse.json();
+                    throw new Error(errorData.message || `Authentication failed: ${userResponse.status}`);
+                }
+                
                 const userData = await userResponse.json();
+                
+                if (!userData || !userData.user) {
+                    throw new Error('No user data received');
+                }
                 
                 setCurrentUser(userData.user);
                 
@@ -35,6 +45,11 @@ function Assignment({ onAssignmentCreated }) {
                     const childrenResponse = await fetch('http://localhost:5000/session/user-children', {
                         credentials: 'include'
                     });
+                    
+                    if (!childrenResponse.ok) {
+                        throw new Error(`Failed to fetch children: ${childrenResponse.status}`);
+                    }
+                    
                     const childrenData = await childrenResponse.json();
                     setChildren(childrenData.children);
                 } else if (userData.user.role === 'child') {
@@ -42,9 +57,15 @@ function Assignment({ onAssignmentCreated }) {
                     // For child users, we don't need to fetch children
                     navigate('/ShowAssignment');
                 }
-            } catch (err) {
-                console.error('Failed to fetch user data:', err);
-                setError('Failed to load user data');
+      
+            }
+            catch (error) {
+                // Handle errors
+                console.log(error);
+                setError(error.message || 'Failed to fetch user data');
+                setTimeout(() => {
+                    navigate('/login'); // Redirect to login page after showing the error message
+                }, 4000);
             }
         };
         
