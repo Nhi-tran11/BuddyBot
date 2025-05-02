@@ -119,7 +119,8 @@ app.post('/signup', (req, res) => {
 
 app.get('/session/current-user', (req, res) => {
     if (!req.session || !req.session.user) {
-        return res.status(401).json({ message: 'Please log in first' });
+        return res.status(401).json({ message: 'Please login first to generate assignments for your monster' });
+
     }
     const user = {
         username: req.session.user.username,
@@ -137,7 +138,18 @@ app.get('/session/user-children', async (req, res) => {
     try {
         // Check if user is logged in
         if (!req.session || !req.session.user) {
-            return res.status(401).json({ message: 'Please log in first' });
+            return res.status(401).json({ message: 'Please login first' });
+        }
+
+        // Find children linked to the logged-in parent
+        const children = await User.find({ parentId: req.session.user._id });
+
+        // Check if there are any children associated with this parent
+        if (children.length === 0) {
+            return res.status(200).json({ 
+            children: [],
+            message: "You don't have any child accounts yet. Please sign up a child account first."
+            });
         }
 
         // Find children linked to the logged-in parent
@@ -167,6 +179,18 @@ app.get('/session/user-children', async (req, res) => {
         console.error('Error fetching children:', err);
         res.status(500).json({ error: err.message });
     }
+});
+app.get('/logout', (req, res) => {
+    // Destroy the session
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Session destruction error:', err);
+            return res.status(500).json({ message: 'Error logging out' });
+        }
+        // Clear the session cookie
+        res.clearCookie('connect.sid');
+        return res.status(200).json({ message: 'Logged out successfully' });
+    });
 });
 
 // AI-Generated Assignment endpoint
@@ -219,6 +243,7 @@ app.post('/ai-assignment', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 // Helper function to call LLM service (placeholder)
 async function callLLMService(prompt) {

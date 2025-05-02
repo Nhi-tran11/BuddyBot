@@ -4,7 +4,7 @@ import '../Login.css';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+
 
 function Login () {
     const [username, setUserName] = useState('');
@@ -34,7 +34,11 @@ function Login () {
             
             console.log(data);
             if (data.message === 'Login successful') {
-                navigate('/');
+
+                localStorage.setItem('user', data.user);
+                
+                navigate('/', { state: { user: data.user } });
+
             }
         }  
         catch (err) {

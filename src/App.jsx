@@ -1,7 +1,7 @@
 import './App.css';
 import './Slideshow.css';
 import { Routes, Route } from "react-router-dom";
-import React from 'react';
+import React from "react";
 import Header from "./header";
 import Footer from "./footer";
 import Navbar from './Navbar';
@@ -13,30 +13,38 @@ import Home from './page/Home';
 import SignUpChild from './page/SignUpChild';
 import ShowAssignment from './page/ShowAssignment';
 
+import LogOut from './page/LogOut';
+
+
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
-// import { useState } from 'react';
+
 
 function App() {
+
+
   return (
 
     <div>
       <Header />
 
-      <Navbar/>
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/game" element={<Game />} />
-        <Route path="/lesson" element={<Lesson />} />
-        <Route path="/assignment" element={<Assignment />} />
-        <Route path="/timetable" element={<TimeTable />} />
-        <Route path="/login" element={<Login />} />
+      
+        <Route path="/logout" element={<LogOut/>} />
+        <Route path="/login" element={<Login/> }/>
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signupChild" element={<SignUpChild />} />
         <Route path="/ShowAssignment" element={<ShowAssignment />} />
-      </Routes>
-    
+        <Route path="/assignment" element={<Assignment />} />
+        <Route path="/game" element={<Game />} />
+        <Route path="/lesson" element={<Lesson />} />
+        <Route path="/timetable" element={<TimeTable />} />
+        
 
+      </Routes>
+  
       <Footer />
     </div>
   );
