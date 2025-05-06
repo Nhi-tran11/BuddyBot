@@ -152,8 +152,7 @@ app.get('/session/user-children', async (req, res) => {
             });
         }
 
-        // Find children linked to the logged-in parent
-        const children = await User.find({ parentId: req.session.user._id });
+        
 
         // Check if there are any children associated with this parent
         if (children.length === 0) {
