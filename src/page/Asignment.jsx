@@ -4,7 +4,8 @@ import "../Assignment.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 
-function Assignment({ onAssignmentCreated }) {
+
+function Assignment() {
 
     const [prompt, setPrompt] = useState('');
     const [subject, setSubject] = useState('math');
@@ -15,6 +16,9 @@ function Assignment({ onAssignmentCreated }) {
     const [parentId, setParentId] = useState('');
     const [childId, setChildId] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
+    const [successMessage, setSuccessMessage] = useState('');
+
+    // const [AIassignment, setAIassignment] = useState(null);
     const navigate = useNavigate();
     useEffect(() => {
         const fetchUserData = async () => {
@@ -84,6 +88,7 @@ function Assignment({ onAssignmentCreated }) {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setSuccessMessage('');
         
         try {
       
@@ -99,9 +104,9 @@ function Assignment({ onAssignmentCreated }) {
             const dueDate = new Date();
             dueDate.setDate(dueDate.getDate() + 7); // Default due date: 1 week
             
-            const response = await fetch('http://localhost:5000/ai-assignment', {
+            const response = await fetch('http://localhost:5000/query-prompt', {
                 method: 'POST',
-                credentials: 'include', // This will include credentials in the request
+                credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
@@ -116,16 +121,31 @@ function Assignment({ onAssignmentCreated }) {
                 })
             });
             
-            setPrompt('');
-            if (onAssignmentCreated) {
-                onAssignmentCreated(response.data.assignment);
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Request failed: ${response.status}`);
             }
+            
+            const data = await response.json();
+            // setAIassignment(data.assignment || data.content);
+            
+            // Show success notification or handle next steps
+            console.log('Assignment created successfully:', data);
+            setSuccessMessage('Assignment successfully generated');
+            // setPrompt('');
+            // if (onAssignmentCreated) {
+            //     onAssignmentCreated(response.data.assignment);
+            // }
+            setTimeout(() => {
+                navigate('/ShowAssignment');
+            }, 2000);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create assignment');
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="ai-assignment-container">
@@ -139,6 +159,7 @@ function Assignment({ onAssignmentCreated }) {
                         <select value={subject} onChange={e => setSubject(e.target.value)}>
                             <option value="math">Math</option>
                             <option value="english">English</option>
+                            <option value="science">Science</option>
                         </select>
                         <label>Assign to Child:</label>
                         <select value={childId} onChange={e => setChildId(e.target.value)} required>
@@ -171,8 +192,18 @@ function Assignment({ onAssignmentCreated }) {
                     <button type="submit" disabled={loading || !prompt}>
                         {loading ? 'Generating...' : 'Create Assignment'}
                     </button>
+                    <button type="button" onClick={() => navigate('/ShowAssignment')}>
+                        View Assignments
+                    </button>
                 </form>
             </div>
+             {loading && <div className="loading-spinner">Generating...</div>}
+            {successMessage && (
+                <div className="success-message">
+                    {successMessage}
+                </div>
+            )}
+    
         </div>
     );
 }

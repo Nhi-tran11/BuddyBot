@@ -11,21 +11,7 @@ const assignmentSchema = new mongoose.Schema({
         required: true
     },
     // For AI-generated content
-    questions: [{
-        question: {
-            type: String,
-            required: function() { return this.aiGenerated; }
-        },
-        answer: {
-            type: String
-        },
-        options: [String], // For multiple choice questions
-        type: {
-            type: String,
-            enum: ['multiple-choice', 'open-ended', 'true-false', 'matching'],
-            default: 'open-ended'
-        }
-    }],
+    questions: String,
     // Who is the assignment for
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
@@ -44,7 +30,7 @@ const assignmentSchema = new mongoose.Schema({
         enum: ['math', 'english', 'science', 'history', 'art', 'other'],
         default: 'other'
     },
-    // Difficulty level
+    //Difficulty level
     difficulty: {
         type: String,
         enum: ['easy', 'medium', 'hard'],
