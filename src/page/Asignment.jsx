@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 
 function Assignment() {
 
+
     const [prompt, setPrompt] = useState('');
     const [subject, setSubject] = useState('math');
     const [ageRange, setAgeRange] = useState('6-8');
@@ -16,9 +17,10 @@ function Assignment() {
     const [parentId, setParentId] = useState('');
     const [childId, setChildId] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
+
     const [successMessage, setSuccessMessage] = useState('');
 
-    // const [AIassignment, setAIassignment] = useState(null);
+
     const navigate = useNavigate();
     useEffect(() => {
         const fetchUserData = async () => {
@@ -27,6 +29,7 @@ function Assignment() {
                 const userResponse = await fetch('http://localhost:5000/session/current-user', {
                     credentials: 'include' // Include cookies for session authentication
                 });
+
                 
                 if (!userResponse.ok) {
                     const errorData = await userResponse.json();
@@ -35,10 +38,12 @@ function Assignment() {
                 
                 const userData = await userResponse.json();
                 
+
                 if (!userData || !userData.user) {
                     throw new Error('No user data received');
                 }
                 
+
                 setCurrentUser(userData.user);
                 
                 // Check user role
@@ -49,11 +54,12 @@ function Assignment() {
                     const childrenResponse = await fetch('http://localhost:5000/session/user-children', {
                         credentials: 'include'
                     });
+
                     
                     if (!childrenResponse.ok) {
                         throw new Error(`Failed to fetch children: ${childrenResponse.status}`);
                     }
-                    
+
                     const childrenData = await childrenResponse.json();
                     setChildren(childrenData.children);
                 } else if (userData.user.role === 'child') {
@@ -61,6 +67,7 @@ function Assignment() {
                     // For child users, we don't need to fetch children
                     navigate('/ShowAssignment');
                 }
+
       
             }
             catch (error) {
@@ -70,6 +77,7 @@ function Assignment() {
                 setTimeout(() => {
                     navigate('/login'); // Redirect to login page after showing the error message
                 }, 4000);
+
             }
         };
         
@@ -159,7 +167,9 @@ function Assignment() {
                         <select value={subject} onChange={e => setSubject(e.target.value)}>
                             <option value="math">Math</option>
                             <option value="english">English</option>
+
                             <option value="science">Science</option>
+
                         </select>
                         <label>Assign to Child:</label>
                         <select value={childId} onChange={e => setChildId(e.target.value)} required>
@@ -192,6 +202,7 @@ function Assignment() {
                     <button type="submit" disabled={loading || !prompt}>
                         {loading ? 'Generating...' : 'Create Assignment'}
                     </button>
+
                     <button type="button" onClick={() => navigate('/ShowAssignment')}>
                         View Assignments
                     </button>
@@ -204,6 +215,7 @@ function Assignment() {
                 </div>
             )}
     
+
         </div>
     );
 }

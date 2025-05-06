@@ -137,6 +137,7 @@ app.get('/session/current-user', (req, res) => {
     });
 })
 
+
 app.get('/session/user-children', async (req, res) => {
     try {
         // Check if user is logged in
@@ -149,9 +150,11 @@ app.get('/session/user-children', async (req, res) => {
 
         // Check if there are any children associated with this parent
         if (children.length === 0) {
+
             return res.status(200).json({
                 children: [],
                 message: "You don't have any child accounts yet. Please sign up a child account first."
+
             });
         }
         // Check if user is a parent
@@ -237,7 +240,9 @@ app.post('/ai-assignment', async (req, res) => {
 
 
 
+
 app.get('/assignments', async (req, res) => {
+
     try {
         // Check if user is logged in
         if (!req.session || !req.session.user) {
@@ -351,5 +356,72 @@ async function queryPrompt(prompt, subject, ageRange) {
     console.log(response.text);
     return response.text;
 }
+
+app.get('/assignments', async (req, res) => {
+    try {
+        // Check if user is logged in
+        if (!req.session || !req.session.user) {
+            return res.status(401).json({ message: 'Please log in first' });
+        }
+        const showAssignments = req.query.showAssignments === 'true';
+        if (!showAssignments) {
+            return res.status(400).json({ message: 'showAssignments query parameter is required' });
+        }
+        
+        let assignments;
+        
+        if (req.session.user.role === 'child') {
+            // Get assignments assigned to this child
+            assignments = await Assignment.find({ 
+                assignedTo: req.session.user._id  // Use _id instead of username
+            }).sort({ dueDate: 1 });
+        } else if (req.session.user.role === 'parent') {
+            // Get assignments created by this parent
+            assignments = await Assignment.find({ 
+                assignedBy: req.session.user.user._id  // Use username for now
+            }).sort({ dueDate: 1 });
+        }
+        
+        res.status(200).json({ 
+            assignments,
+            userRole: req.session.user.role
+        });
+    } catch (error) {
+        console.error('Error fetching assignments:', error);
+        res.status(500).json({ message: 'Server error fetching assignments' });
+    }
+});
+
+// Endpoint to mark assignment as completed
+app.put('/assignments/:id/complete', async (req, res) => {
+    try {
+        if (!req.session || !req.session.user) {
+            return res.status(401).json({ message: 'Please log in first' });
+        }
+        
+        if (req.session.user.role !== 'child') {
+            return res.status(403).json({ message: 'Only children can complete assignments' });
+        }
+        
+        const assignment = await Assignment.findById(req.params.id);
+        
+        if (!assignment) {
+            return res.status(404).json({ message: 'Assignment not found' });
+        }
+        
+        if (assignment.assignedTo !== req.session.user.username) {
+            return res.status(403).json({ message: 'This assignment is not assigned to you' });
+        }
+        
+        assignment.completed = true;
+        assignment.completedDate = new Date();
+        await assignment.save();
+        
+        res.status(200).json({ message: 'Assignment marked as completed', assignment });
+    } catch (error) {
+        console.error('Error completing assignment:', error);
+        res.status(500).json({ message: 'Server error completing assignment' });
+    }
+});
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

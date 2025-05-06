@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
 import "../ShowAssignment.css";
+
 import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
+
 
 function ShowAssignment() {
   const [assignments, setAssignments] = useState([]);
   const [showAssignments, setShowAssignments] = useState(false);
   const [error, setError] = useState(null);
+
   const [generateQuestion, setGenerateQuestion] = useState(false);
 
   const navigate = useNavigate();
   const [role, setRole] = useState('null');
+
   // Fetch assignments for the child
   const fetchAssignments = async () => {
     try {
@@ -19,7 +23,6 @@ function ShowAssignment() {
       });
 
       
-     
 
       if (!response.ok) {
         const errorStatus = response.status;
@@ -28,7 +31,7 @@ function ShowAssignment() {
       }
       
       const data = await response.json();
-      // setRole(data.userRole); // Set the role from the response using the state setter
+
       if (response.ok) {
 
         const childAssignments = data.assignments || data;
@@ -47,6 +50,7 @@ function ShowAssignment() {
       fetchAssignments();
     }
   }, [showAssignments]);
+
   // Add a separate function to get user role
 const fetchUserRole = async () => {
   try {
@@ -78,6 +82,7 @@ useEffect(() => {
   return (
     <div className="assignment-container">
       <h2>Assignments</h2>
+
       <div className="assignment-buttons">
       <button type="button" onClick={() => setShowAssignments(!showAssignments)}>
         {showAssignments ? 'Hide Assignments' : 'Show Assignments'}
@@ -105,6 +110,7 @@ useEffect(() => {
                     <strong>Description:</strong> {assignment.description}
                   </div>
                   <div className="assignment-questions">
+
                     {assignment.questions && (
                       <>
                         <strong>Questions:</strong>
@@ -121,6 +127,7 @@ useEffect(() => {
                             <p>{assignment.questions.toString()}</p>
                           )
                         )}
+
                       </>
                     )}
                   </div>
