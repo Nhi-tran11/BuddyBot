@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "../ShowAssignment.css";
 
+import ReactMarkdown from 'react-markdown';
+import { useNavigate } from 'react-router-dom';
+
+
 function ShowAssignment() {
   const [assignments, setAssignments] = useState([]);
   const [showAssignments, setShowAssignments] = useState(false);
   const [error, setError] = useState(null);
+
+  const [generateQuestion, setGenerateQuestion] = useState(false);
+
+  const navigate = useNavigate();
+  const [role, setRole] = useState('null');
 
   // Fetch assignments for the child
   const fetchAssignments = async () => {
@@ -14,6 +23,7 @@ function ShowAssignment() {
       });
 
       
+
       if (!response.ok) {
         const errorStatus = response.status;
         console.error(`Server responded with status ${errorStatus}`);
@@ -21,7 +31,7 @@ function ShowAssignment() {
       }
       
       const data = await response.json();
-      
+
       if (response.ok) {
 
         const childAssignments = data.assignments || data;
@@ -41,13 +51,48 @@ function ShowAssignment() {
     }
   }, [showAssignments]);
 
+  // Add a separate function to get user role
+const fetchUserRole = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/assignments?showAssignments=true', {
+      credentials: 'include'
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      setRole(data.userRole);
+    }
+  } catch (err) {
+    console.error('Error fetching user role:', err);
+  }
+};
+
+// Call it when component mounts
+useEffect(() => {
+  fetchUserRole();
+}, []);
+  useEffect(() => {
+    if (generateQuestion) {
+      navigate('/Assignment');
+    }
+  }, [generateQuestion]);
+
+
+
   return (
     <div className="assignment-container">
       <h2>Assignments</h2>
-      <div className="assignment-form"></div>
+
+      <div className="assignment-buttons">
       <button type="button" onClick={() => setShowAssignments(!showAssignments)}>
         {showAssignments ? 'Hide Assignments' : 'Show Assignments'}
       </button>
+      
+      {role=== 'parent' && (
+        <button type="button" onClick={()=> setGenerateQuestion(!generateQuestion)}>Generate Question</button>
+      )}
+      </div>
+      
       {error && <p className="error-message">{error}</p>}
       <div className="assignment-form"></div>
    
@@ -65,14 +110,24 @@ function ShowAssignment() {
                     <strong>Description:</strong> {assignment.description}
                   </div>
                   <div className="assignment-questions">
-                    {assignment.questions && assignment.questions.length > 0 && (
+
+                    {assignment.questions && (
                       <>
                         <strong>Questions:</strong>
-                        <ol>
-                          {assignment.questions.map((q, index) => (
-                            <li key={index}>{q.question}</li>
-                          ))}
-                        </ol>
+                        {Array.isArray(assignment.questions) ? (
+                          <ol>
+                            {assignment.questions.map((q, index) => (
+                              <li key={index}>{typeof q === 'object' ? q.question : q}</li>
+                            ))}
+                          </ol>
+                        ) : (
+                          typeof assignment.questions === 'string' ? (
+                            <ReactMarkdown>{assignment.questions}</ReactMarkdown>
+                          ) : (
+                            <p>{assignment.questions.toString()}</p>
+                          )
+                        )}
+
                       </>
                     )}
                   </div>

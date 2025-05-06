@@ -41,7 +41,6 @@ function App() {
         <Route path="/game" element={<Game />} />
         <Route path="/lesson" element={<Lesson />} />
         <Route path="/timetable" element={<TimeTable />} />
-        
 
       </Routes>
   
