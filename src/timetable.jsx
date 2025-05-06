@@ -1,21 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './timetable.css';
 
 const Timetable = ({ user }) => {
-  const [timetable, setTimetable] = useState([
-    { id: 1, day: 'Monday', time: '10:00 AM', subject: 'Math' },
-    { id: 2, day: 'Tuesday', time: '11:00 AM', subject: 'Science' },
-  ]);
-
-  const [tableData, setTableData] = useState({});
+  const [timetable, setTimetable] = useState([]);
   const [newEntry, setNewEntry] = useState({ day: '', time: '', subject: '' });
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const times = ["09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM"];
   const subjects = ["Math", "English", "Science", "General Knowledge"];
 
+  // ✅ Fetch timetable from backend on load
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/timetable')
+      .then(res => setTimetable(res.data))
+      .catch(err => console.error("Failed to load:", err));
+  }, []);
+
+  // ✅ Add entry to MongoDB and local state
   const handleAdd = () => {
-    const id = Date.now();
     let { day, time, subject } = newEntry;
 
     // Normalize input
@@ -27,30 +30,26 @@ const Timetable = ({ user }) => {
     const validTime = times.includes(time);
     const validSubject = subjects.includes(subject);
 
-    if (validDay && validTime && validSubject) {
-      setTimetable([...timetable, { id, day, time, subject }]);
-      setTableData(prev => ({ ...prev, [day + time]: subject }));
-      setNewEntry({ day: '', time: '', subject: '' });
-    } else {
+    if (!validDay || !validTime || !validSubject) {
       alert("❌ Invalid input. Use correct day, time, and subject.");
+      return;
     }
+
+    axios.post('http://localhost:5000/api/timetable', { day, time, subject })
+      .then(res => {
+        setTimetable([...timetable, res.data]);
+        setNewEntry({ day: '', time: '', subject: '' });
+      })
+      .catch(err => console.error("Failed to add:", err));
   };
 
-  const handleRemove = () => {
-    let { day, time } = newEntry;
-    day = day.charAt(0).toUpperCase() + day.slice(1).toLowerCase();
-
-    if (days.includes(day) && times.includes(time)) {
-      const updated = { ...tableData };
-      delete updated[day + time];
-      setTableData(updated);
-    } else {
-      alert("❌ Invalid input. Please check Day and Time.");
-    }
-  };
-
+  // ✅ Remove entry from MongoDB by _id
   const handleDelete = (id) => {
-    setTimetable(timetable.filter(entry => entry.id !== id));
+    axios.delete(`http://localhost:5000/api/timetable/${id}`)
+      .then(() => {
+        setTimetable(timetable.filter(entry => entry._id !== id));
+      })
+      .catch(err => console.error("Failed to delete:", err));
   };
 
   return (
@@ -59,10 +58,10 @@ const Timetable = ({ user }) => {
 
       <ul>
         {timetable.map(entry => (
-          <li key={entry.id}>
+          <li key={entry._id}>
             {entry.day} - {entry.time} - {entry.subject}
             {user?.role === 'parent' && (
-              <button onClick={() => handleDelete(entry.id)} style={{ marginLeft: '10px' }}>
+              <button onClick={() => handleDelete(entry._id)} style={{ marginLeft: '10px' }}>
                 Delete
               </button>
             )}
@@ -90,7 +89,6 @@ const Timetable = ({ user }) => {
           />
           <div className="button-row">
             <button onClick={handleAdd}>Add</button>
-            <button onClick={handleRemove}>Remove</button>
           </div>
         </div>
       )}
@@ -110,11 +108,12 @@ const Timetable = ({ user }) => {
             {times.map(time => (
               <tr key={time}>
                 <td>{time}</td>
-                {days.map(day => (
-                  <td key={day + time}>
-                    {tableData[day + time] || ""}
-                  </td>
-                ))}
+                {days.map(day => {
+                  const found = timetable.find(
+                    entry => entry.day === day && entry.time === time
+                  );
+                  return <td key={day + time}>{found?.subject || ""}</td>;
+                })}
               </tr>
             ))}
           </tbody>

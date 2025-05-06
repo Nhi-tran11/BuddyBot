@@ -6,6 +6,8 @@ const User = require('./model/User');
 const app = express();
 const Assignment = require('./model/Assignment');
 
+app.use(cors());
+
 const session = require('express-session');
 
 // Middleware
@@ -14,6 +16,12 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+
+app.use(cors({origin: '*',
+    methods: ['GET', 'POST', 'DELETE', 'PUT'], 
+   
+    credentials: true}))
+
 
 app.use(session({
   secret: 'your_secret_key',
@@ -30,6 +38,11 @@ mongoose.connect(process.env.MONGODB_URI)
     .catch(err => console.error('MongoDB connection error:', err));
 
 const PORT = process.env.PORT;
+
+const timetableRoutes = require('./routes/timetableRoutes');
+console.log("Loaded timetableRoutes:", typeof timetableRoutes);
+
+app.use('/api/timetable', timetableRoutes);
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -116,6 +129,10 @@ app.post('/signup', (req, res) => {
         }
     });
 })
+
+app.get('/',(req, res) => {
+    res.send('Backend is running..')
+});
 
 app.get('/session/current-user', (req, res) => {
     if (!req.session || !req.session.user) {
