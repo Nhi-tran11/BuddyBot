@@ -1,0 +1,16 @@
+.game-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+  }
+  
+  button {
+    display: block;
+    margin: 10px 0;
+    padding: 10px;
+  }
+  
+  .selected {
+    background-color: #ddd;
+  }
+  

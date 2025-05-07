@@ -32,6 +32,7 @@ const Navbar=() =>{
         <Link to="/game" className="a">Game</Link>
         <Link to="/assignment" className="a">Assignment</Link>
         <Link to="/timetable" className="a">Time Table</Link>
+        
         {isLoggedIn ? (
           <Link to="/logout" className="split" onClick={handleLogout}>Logout</Link>
         ) : (

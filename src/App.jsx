@@ -12,9 +12,10 @@ import SignUp from './page/SignUp';
 import Home from './page/Home';
 import SignUpChild from './page/SignUpChild';
 import ShowAssignment from './page/ShowAssignment';
+import TestQuizAPI from './page/TestQuizAPI';
 
 import LogOut from './page/LogOut';
-
+//import Quiz from './page/Quiz';
 
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
@@ -41,6 +42,7 @@ function App() {
         <Route path="/game" element={<Game />} />
         <Route path="/lesson" element={<Lesson />} />
         <Route path="/timetable" element={<TimeTable />} />
+        <Route path="/testapi" element={<TestQuizAPI />} />
         
 
       </Routes>

@@ -5,16 +5,17 @@ require('dotenv').config();
 const User = require('./model/User');
 const app = express();
 const Assignment = require('./model/Assignment');
-
+const quizRoutes = require('./routes/quizRoutes');
 const session = require('express-session');
 
 // Middleware
+app.use(cors());
 app.use(cors({
     origin: ['*', 'http://localhost:5173'], 
     credentials: true
 }));
 app.use(express.json());
-
+app.use('/api/quiz', quizRoutes);
 app.use(session({
   secret: 'your_secret_key',
   resave: true,
@@ -152,8 +153,7 @@ app.get('/session/user-children', async (req, res) => {
             });
         }
 
-        // Find children linked to the logged-in parent
-        const children = await User.find({ parentId: req.session.user._id });
+        
 
         // Check if there are any children associated with this parent
         if (children.length === 0) {
