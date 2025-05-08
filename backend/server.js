@@ -5,6 +5,7 @@ require('dotenv').config();
 const User = require('./model/User');
 const app = express();
 const Assignment = require('./model/Assignment');
+const quizRoutes = require('./routes/quizRoutes');
 const { GoogleGenAI } = require("@google/genai");
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
@@ -18,7 +19,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
-
+app.use('/api/quiz', quizRoutes);
 app.use(session({
     secret: 'your_secret_key',
     resave: true,
