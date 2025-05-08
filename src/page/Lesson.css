@@ -1,0 +1,22 @@
+Lesson.css
+.lesson-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .lesson-container h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .lesson-container ul {
+    list-style-type: square;
+    padding-left: 20px;
+  }
+  
+  .lesson-container li {
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+  }
+  
