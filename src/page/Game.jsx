@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './game.css';
 import axios from 'axios';
 
+
 const Game = () => {
   const [view, setView] = useState("instructions"); 
   const [questions, setQuestions] = useState([]);
@@ -52,7 +53,7 @@ const Game = () => {
   }
 
   if (view === "done") {
-    return <h2 className="game-container">🎉 You finished the quiz!</h2>;
+    return <h2 className="game-container">🎉 Congrats! you finished the quiz!</h2>;
   }
 
   const q = questions[current];

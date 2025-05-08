@@ -4,12 +4,13 @@ const cors = require('cors');
 require('dotenv').config();
 const User = require('./model/User');
 const app = express();
+
 const Assignment = require('./model/Assignment');
 const quizRoutes = require('./routes/quizRoutes');
 const session = require('express-session');
 
 // Middleware
-app.use(cors());
+
 app.use(cors({
     origin: ['*', 'http://localhost:5173'], 
     credentials: true
