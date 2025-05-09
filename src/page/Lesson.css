@@ -12,6 +12,47 @@
     background-size: cover; /* THIS ensures full cover */
     background-attachment: fixed; /* (optional: makes it scroll nicely) */
 }
+/* Avatar styles */
+.lesson-avatar {
+    position: absolute;
+    transition: all 1s ease;
+    text-align: center;
+    z-index: 10;
+}
+
+.lesson-avatar img {
+    width: 120px;
+    height: auto;
+    border-radius: 50%;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
+}
+
+/* Avatar in center initially */
+.lesson-avatar.centered {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Avatar moved to top-left after delay */
+.lesson-avatar.moved {
+    top: 300px; /* adjust based on your navbar height */
+    left: 20px;
+    transform: translate(0, 0);
+}
+
+/* Subjects section */
+.subjects-section {
+    text-align: center;
+    margin-top: 60px; /* Add margin to avoid overlapping with the avatar */
+    animation: fadeIn 1s ease-in-out;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 
 .subject-list {
