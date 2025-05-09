@@ -1,6 +1,6 @@
 .lesson-container {
-    min-height: 100vh;  /* ensures it fills full screen */
-    width: 100%;        /* full width */
+    min-height: 100vh;  
+    width: 100%;        
     padding: 40px 20px;
     box-sizing: border-box;
     display: flex;
@@ -8,11 +8,18 @@
     align-items: center;
     justify-content: flex-start;
 
-    background: url('/public/lesson-bg.png') no-repeat center center;
-    background-size: cover; /* THIS ensures full cover */
-    background-attachment: fixed; /* (optional: makes it scroll nicely) */
+   
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.7), 
+        rgba(255, 255, 255, 0.7)
+    ), url('/public/lesson-bg.png') no-repeat center center;
+    background-size: cover; 
+    background-attachment: fixed; 
 }
-/* Avatar styles */
+
+
+/* Avatar styles           */
+
 .lesson-avatar {
     position: absolute;
     transition: all 1s ease;
@@ -41,7 +48,9 @@
     transform: translate(0, 0);
 }
 
-/* Subjects section */
+
+/* Subjects section styles */
+
 .subjects-section {
     text-align: center;
     margin-top: 60px; /* Add margin to avoid overlapping with the avatar */
@@ -54,7 +63,9 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-
+/* ======================= */
+/* Subjects List (Lesson.jsx) */
+/* ======================= */
 .subject-list {
     display: flex;
     flex-wrap: wrap;
@@ -103,4 +114,74 @@
 
 .fade-in {
     animation: fadeInUp 0.5s forwards;
+}
+
+
+/* NEW: Lesson Card Styles */
+
+.lesson-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 20px 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 20px auto;
+    text-align: left;
+}
+
+/* NEW: Fade-in per lesson list item */
+.fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.5s forwards;
+}
+
+/* ======================= */
+/* NEW: Back Button Styles */
+/* ======================= */
+.back-button {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background: #4CAF50;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s, transform 0.2s;
+}
+
+.back-button:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+}
+.lesson-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 1.05em;
+    font-weight: 500;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.lesson-link {
+    margin-left: 10px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s;
+    padding: 5px; 
+}
+
+.lesson-link:hover {
+    transform: scale(1.1);
+}
+
+/*  YouTube icon */
+.youtube-icon {
+    width: 20px;  
+    height: 20px;
+    margin-left: 10px;
+    cursor: pointer; /* ensures it's clickable */
 }
