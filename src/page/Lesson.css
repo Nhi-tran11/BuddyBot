@@ -1,11 +1,16 @@
 .lesson-container {
-    text-align: center;
-    padding: 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-    min-height: 100vh; /* ✅ full viewport height */
-    padding-bottom: 60px; /* ✅ extra bottom padding */
+    min-height: 100vh;  /* ensures it fills full screen */
+    width: 100%;        /* full width */
+    padding: 40px 20px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    background: url('/public/lesson-bg.png') no-repeat center center;
+    background-size: cover; /* THIS ensures full cover */
+    background-attachment: fixed; /* (optional: makes it scroll nicely) */
 }
 
 
