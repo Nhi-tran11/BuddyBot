@@ -3,14 +3,46 @@ import { Link } from 'react-router-dom';
 import './Lesson.css';
 
 const subjects = [
-  { name: 'Mathematics', description: 'Explore numbers & formulas' },
-  { name: 'Science', description: 'Discover how the world works' },
-  { name: 'English', description: 'Enhance your language skills' },
-  { name: 'History', description: 'Learn about the past' },
-  { name: 'Geography', description: 'Study places & environments' },
-  { name: 'Art', description: 'Get creative with colors & shapes' },
-  { name: 'Physical Education', description: 'Stay fit and active' },
-  { name: 'Music', description: 'Enjoy the world of sounds' }
+  {
+    name: 'Mathematics',
+    description: 'Explore numbers & formulas',
+    icon: '/public/math.png'
+  },
+  {
+    name: 'Science',
+    description: 'Discover how the world works',
+    icon: '/public/science.png'
+  },
+  {
+    name: 'English',
+    description: 'Enhance your language skills',
+    icon: '/public/english.png'
+  },
+  {
+    name: 'History',
+    description: 'Learn about the past',
+    icon: '/public/history.png'
+  },
+  {
+    name: 'Geography',
+    description: 'Study places & environments',
+    icon: '/public/geography.png'
+  },
+  {
+    name: 'Art',
+    description: 'Get creative with colors & shapes',
+    icon: '/public/art.png'
+  },
+  {
+    name: 'Physical Education',
+    description: 'Stay fit and active',
+    icon: '/public/pe.png'
+  },
+  {
+    name: 'Music',
+    description: 'Enjoy the world of sounds',
+    icon: '/public/music.png'
+  }
 ];
 
 export default function Lesson() {
@@ -23,8 +55,10 @@ export default function Lesson() {
           <Link
             key={index}
             to={`/lesson/${subject.name.toLowerCase().replace(/\s+/g, '-')}`}
-            className="subject-card"
+            className="subject-card fade-in"
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
+            <img src={subject.icon} alt={subject.name} className="subject-icon" />
             <h3>{subject.name}</h3>
             <p>{subject.description}</p>
           </Link>
