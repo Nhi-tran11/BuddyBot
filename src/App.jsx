@@ -14,7 +14,7 @@ import SignUpChild from './page/SignUpChild';
 import ShowAssignment from './page/ShowAssignment';
 import SubjectDetail from './page/SubjectDetail';
 import LogOut from './page/LogOut';
-
+import Question from './page/Question';
 
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
@@ -37,6 +37,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/signupChild" element={<SignUpChild />} />
         <Route path="/ShowAssignment" element={<ShowAssignment />} />
+        <Route path="/Question/:assignmentId" element={<Question />} />
         <Route path="/assignment" element={<Assignment />} />
         <Route path="/game" element={<Game />} />
         <Route path="/lesson" element={<Lesson />} />
