@@ -139,6 +139,9 @@ function Assignment() {
             
             // Show success notification or handle next steps
             console.log('Assignment created successfully:', data);
+            console.log('Assignment:',data.assignment);
+            console.log('Assignment:',data.debugquestions);
+            
             setSuccessMessage('Assignment successfully generated');
             // setPrompt('');
             // if (onAssignmentCreated) {

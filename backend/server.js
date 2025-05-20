@@ -189,55 +189,55 @@ app.get('/logout', (req, res) => {
     });
 });
 
-// AI-Generated Assignment endpoint
-app.post('/ai-assignment', async (req, res) => {
-    try {
-        const { prompt, assignedTo, subject, ageRange, dueDate } = req.body;
+// // AI-Generated Assignment endpoint
+// app.post('/ai-assignment', async (req, res) => {
+//     try {
+//         const { prompt, assignedTo, subject, ageRange, dueDate } = req.body;
 
-        // Check if logged in user has parent role
-        if (!req.session || !req.session.user) {
-            return res.status(401).json({ message: 'Please log in first' });
-        }
-        if (req.session.user.role !== 'parent') {
-            return res.status(403).json({ message: 'Only parents can create assignments' });
-        }
+//         // Check if logged in user has parent role
+//         if (!req.session || !req.session.user) {
+//             return res.status(401).json({ message: 'Please log in first' });
+//         }
+//         if (req.session.user.role !== 'parent') {
+//             return res.status(403).json({ message: 'Only parents can create assignments' });
+//         }
 
-        // Basic validation
-        if (!prompt || !assignedTo || !dueDate) {
-            return res.status(400).json({ message: 'Missing required fields' });
-        }
+//         // Basic validation
+//         if (!prompt || !assignedTo || !dueDate) {
+//             return res.status(400).json({ message: 'Missing required fields' });
+//         }
 
-        // Format prompt for the AI
-        const formattedPrompt = `Generate ${subject || 'learning'} questions for a child in the age range ${ageRange || '6-8'}. ${prompt}`;
+//         // Format prompt for the AI
+//         const formattedPrompt = `Generate ${subject || 'learning'} questions for a child in the age range ${ageRange || '6-8'}. ${prompt}`;
 
-    
 
-        // Parse the AI response into structured questions
-        const questions = parseAIResponseToQuestions(aiResponse);
 
-        // Create the assignment in the database
-        const assignment = await Assignment.create({
-            title: `AI Assignment: ${subject || prompt.substring(0, 30)}...`,
-            description: `Generated from prompt: "${prompt}"`,
-            questions: questions,
-            assignedTo,
-            assignedBy: req.session.user.username, // Get username from session
-            dueDate: new Date(dueDate),
-            subject: subject || 'other',
-            ageRange: ageRange || '6-8',
-            aiGenerated: true,
-            aiPrompt: prompt
-        });
+//         // Parse the AI response into structured questions
+//         const questions = parseAIResponseToQuestions(aiResponse);
 
-        res.status(201).json({
-            message: 'AI assignment created successfully',
-            assignment
-        });
-    } catch (err) {
-        console.error('Error creating AI assignment:', err);
-        res.status(500).json({ error: err.message });
-    }
-});
+//         // Create the assignment in the database
+//         const assignment = await Assignment.create({
+//             title: `AI Assignment: ${subject || prompt.substring(0, 30)}...`,
+//             description: `Generated from prompt: "${prompt}"`,
+//             questions: questions,
+//             assignedTo,
+//             assignedBy: req.session.user.username, // Get username from session
+//             dueDate: new Date(dueDate),
+//             subject: subject || 'other',
+//             ageRange: ageRange || '6-8',
+//             aiGenerated: true,
+//             aiPrompt: prompt
+//         });
+
+//         res.status(201).json({
+//             message: 'AI assignment created successfully',
+//             assignment
+//         });
+//     } catch (err) {
+//         console.error('Error creating AI assignment:', err);
+//         res.status(500).json({ error: err.message });
+//     }
+// });
 
 
 
@@ -259,12 +259,12 @@ app.get('/assignments', async (req, res) => {
         if (req.session.user.role === 'child') {
             // Get assignments assigned to this child
             assignments = await Assignment.find({
-                assignedTo: req.session.user._id  
+                assignedTo: req.session.user._id
             }).sort({ dueDate: 1 });
         } else if (req.session.user.role === 'parent') {
             // Get assignments created by this parent
             assignments = await Assignment.find({
-                assignedBy: req.session.user._id 
+                assignedBy: req.session.user._id
             }).sort({ dueDate: 1 });
         }
 
@@ -305,26 +305,27 @@ app.post('/query-prompt', async (req, res) => {
         // For this example, we're creating a placeholder for the actual implementation
         const response = await queryPrompt(req.body.prompt, req.body.subject, req.body.ageRange);
 
-        // const questions = parseAIResponseToQuestions(response);
-        
+        const questions = parseAIResponseToQuestions(response);
         // 3. Create a new assignment
         const newAssignment = new Assignment({
             title: req.body.title || `${subject} Assignment - ${new Date().toLocaleDateString()}`,
             description: req.body.description || `AI-generated ${subject} assignment for ${ageRange} age range`,
-            questions: response,
+            questions: questions,
             assignedTo,
             assignedBy: req.session.user._id, // Current logged-in parent's ID
             subject: subject,
             dueDate: req.body.dueDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Default: 1 week from now
             status: 'pending',
-           
+
         });
         // Save the assignment to the database
-    await newAssignment.save();
-    res.status(201).json({ 
-        message: 'Assignment created successfully', 
-        assignment: newAssignment 
-      });
+        await newAssignment.save();
+        res.status(201).json({
+            response: response,
+            message: 'Assignment created successfully',
+            assignment: newAssignment,
+            debugquestions: questions
+        });
 
     } catch (error) {
         console.error('Error processing prompt:', error);
@@ -343,7 +344,7 @@ async function queryPrompt(prompt, subject, ageRange) {
         {
             parts: [
                 {
-                    text: `Generate content for a ${subject || 'general'} topic, appropriate for ages ${ageRange || '6-12'}.\nPrompt: ${prompt}`
+                    text: `Generate muitiple choice questions for a ${subject} topic, appropriate for ages ${ageRange}.\n base on request of Prompt: ${prompt}.Format your response as a numbered list (1, 2, 3) with each question and options anwer with ((a), (b), (c), (d)) and final result with (answer:). Provide the response without any characters and no introduction.`,
                 }
             ]
         }
@@ -368,22 +369,22 @@ app.get('/assignments', async (req, res) => {
         if (!showAssignments) {
             return res.status(400).json({ message: 'showAssignments query parameter is required' });
         }
-        
+
         let assignments;
-        
+
         if (req.session.user.role === 'child') {
             // Get assignments assigned to this child
-            assignments = await Assignment.find({ 
+            assignments = await Assignment.find({
                 assignedTo: req.session.user._id  // Use _id instead of username
             }).sort({ dueDate: 1 });
         } else if (req.session.user.role === 'parent') {
             // Get assignments created by this parent
-            assignments = await Assignment.find({ 
+            assignments = await Assignment.find({
                 assignedBy: req.session.user.user._id  // Use username for now
             }).sort({ dueDate: 1 });
         }
-        
-        res.status(200).json({ 
+
+        res.status(200).json({
             assignments,
             userRole: req.session.user.role
         });
@@ -399,30 +400,97 @@ app.put('/assignments/:id/complete', async (req, res) => {
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
         }
-        
+
         if (req.session.user.role !== 'child') {
             return res.status(403).json({ message: 'Only children can complete assignments' });
         }
-        
+
         const assignment = await Assignment.findById(req.params.id);
-        
+
         if (!assignment) {
             return res.status(404).json({ message: 'Assignment not found' });
         }
-        
+
         if (assignment.assignedTo !== req.session.user.username) {
             return res.status(403).json({ message: 'This assignment is not assigned to you' });
         }
-        
+
         assignment.completed = true;
         assignment.completedDate = new Date();
         await assignment.save();
-        
+
         res.status(200).json({ message: 'Assignment marked as completed', assignment });
     } catch (error) {
         console.error('Error completing assignment:', error);
         res.status(500).json({ message: 'Server error completing assignment' });
     }
 });
+function parseAIResponseToQuestions(aiResponse) {
+    if (!aiResponse || typeof aiResponse !== 'string') return [];
+
+    // Split into question blocks by number (e.g., "1. ...", "2. ...")
+    const questionBlocks = aiResponse.split(/\n(?=\d+\.\s)/).map(block => block.trim()).filter(Boolean);
+
+    return questionBlocks.map(block => {
+        // Extract the question (first line after number)
+        const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+        let questionLine = lines[0];
+        // Remove leading number and dot
+        questionLine = questionLine.replace(/^\d+\.\s*/, '');
+
+        // Extract options (lines starting with (A), (B), etc.)
+        const options = lines.slice(1)
+            .map(opt => {
+                const match = opt.match(/^(?:\([a-dA-D]\)|[a-dA-D]\))\s+(.+)$/);
+                return match ? match[1].trim() : null;
+            })
+            .filter(Boolean);
+        const answerLine = lines.find(line => /^\(answer:\s*[a-dA-D]\)$/i.test(line));
+        let answer = null;
+        if (answerLine) {
+        const answerMatch = answerLine.match(/^\(answer:\s*([a-dA-D])\)$/i);
+            if (answerMatch) {
+                answer = answerMatch[1].toUpperCase();
+            }
+        }
+        return {
+            question: questionLine,
+            options: options,
+            answer: answer
+        };
+    });
+}
+
+// Get assignment by ID
+app.get('/assignments/:id', async (req, res) => {
+    try {
+        const assignment = await Assignment.findById(req.params.id);
+        if (!assignment) {
+            return res.status(404).json({ message: 'Assignment not found' });
+        }
+        res.status(200).json(assignment);
+    } catch (error) {
+        console.error('Error fetching assignment:', error);
+        res.status(500).json({ message: 'Server error fetching assignment' });
+    }
+});
+app.put('/update-assignment', async (req, res) => {
+    try {
+        const { assignmentId, score } = req.body;
+        const assignment = await Assignment.findByIdAndUpdate(assignmentId, {
+            score: score,
+            status: 'completed'
+        }, { new: true });
+
+        if (!assignment) {
+            return res.status(404).json({ message: 'Assignment not found' });
+        }
+        res.status(200).json({ message: 'Assignment updated successfully', assignment });
+    } catch (error) {
+        console.error('Error updating assignment:', error);
+        res.status(500).json({ message: 'Server error updating assignment' });
+    }
+});
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

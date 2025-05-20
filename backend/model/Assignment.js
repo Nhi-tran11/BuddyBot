@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
-
+const questionSchema = new mongoose.Schema({
+    question: { type: String, required: true },
+    options: { type: [String], default: [] },
+    answer: { type: String }
+}, { _id: false });
 const assignmentSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -11,7 +15,7 @@ const assignmentSchema = new mongoose.Schema({
         required: true
     },
     // For AI-generated content
-    questions: String,
+    questions: [questionSchema],
     // Who is the assignment for
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,

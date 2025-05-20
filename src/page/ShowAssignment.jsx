@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../ShowAssignment.css";
 
-import ReactMarkdown from 'react-markdown';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -84,52 +83,36 @@ useEffect(() => {
       <h2>Assignments</h2>
 
       <div className="assignment-buttons">
-      <button type="button" onClick={() => setShowAssignments(!showAssignments)}>
-        {showAssignments ? 'Hide Assignments' : 'Show Assignments'}
-      </button>
-      
-      {role=== 'parent' && (
-        <button type="button" onClick={()=> setGenerateQuestion(!generateQuestion)}>Generate Question</button>
-      )}
+        <button type="button" onClick={() => setShowAssignments(!showAssignments)}>
+          {showAssignments ? 'Hide Assignments' : 'Show Assignments'}
+        </button>
+        {role === 'parent' && (
+          <button type="button" onClick={() => setGenerateQuestion(!generateQuestion)}>
+            Generate Question
+          </button>
+        )}
       </div>
-      
+
       {error && <p className="error-message">{error}</p>}
       <div className="assignment-form"></div>
-   
-      {showAssignments &&(
+
+      {showAssignments && (
         <div className="child-assignments">
           {assignments.length === 0 ? (
             <p>No assignments found for this child.</p>
           ) : (
             <ul className="assignments-list">
               {assignments.map(assignment => (
-                <li key={assignment._id} className="assignment-item">
+                <li
+                  key={assignment._id}
+                  className="assignment-item"
+                  onClick={() => navigate(`/Question/${assignment._id}`, { state: { assignmentId: assignment._id } })}
+                  style={{ cursor: "pointer" }}
+                >
                   <h4>{assignment.title} - {assignment.subject}</h4>
-                  <p><strong>Due:</strong> {new Date(assignment.dueDate).toLocaleDateString()}</p>
+                  <p><strong>Due:</strong> {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : "N/A"}</p>
                   <div className="assignment-description">
                     <strong>Description:</strong> {assignment.description}
-                  </div>
-                  <div className="assignment-questions">
-
-                    {assignment.questions && (
-                      <>
-                        <strong>Questions:</strong>
-                        {Array.isArray(assignment.questions) ? (
-                          <ol>
-                            {assignment.questions.map((q, index) => (
-                              <li key={index}>{typeof q === 'object' ? q.question : q}</li>
-                            ))}
-                          </ol>
-                        ) : (
-                          typeof assignment.questions === 'string' ? (
-                            <ReactMarkdown>{assignment.questions}</ReactMarkdown>
-                          ) : (
-                            <p>{assignment.questions.toString()}</p>
-                          )
-                        )}
-
-                      </>
-                    )}
                   </div>
                   <div className="assignment-status">
                     <strong>Status:</strong> {assignment.status}
