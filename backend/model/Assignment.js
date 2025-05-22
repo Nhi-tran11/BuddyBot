@@ -48,7 +48,7 @@ const assignmentSchema = new mongoose.Schema({
     // Completion status
     status: {
         type: String,
-        enum: ['pending', 'in-progress', 'completed', 'overdue'],
+        enum: ['pending', 'completed', 'overdue'],
         default: 'pending'
     },
     // Child's score if applicable

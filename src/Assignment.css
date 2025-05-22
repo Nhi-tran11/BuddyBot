@@ -1,4 +1,5 @@
-.assignment-container {
+
+.ai-assignment-form {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -20,7 +21,7 @@
     margin: 0;
 }
 
-.create-button {
+.ai-assignment-form button {
     background-color: #4CAF50;
     color: white;
     padding: 0.75rem 1.5rem;
@@ -34,13 +35,13 @@
     gap: 0.5rem;
 }
 
-.create-button:hover {
+.ai-assignment-form button:hover {
     background-color: #45a049;
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.create-button:active {
+.ai-assignment-form button:active {
     transform: translateY(0);
 }
 
@@ -111,11 +112,11 @@
     width: 100%;
 }
 
-.ai-form button:hover {
+.ai-assignment-form button:hover {
     background-color: #45a049;
 }
 
-.ai-form button:disabled {
+.ai-assignment-form button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
 }
