@@ -189,58 +189,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-// // AI-Generated Assignment endpoint
-// app.post('/ai-assignment', async (req, res) => {
-//     try {
-//         const { prompt, assignedTo, subject, ageRange, dueDate } = req.body;
-
-//         // Check if logged in user has parent role
-//         if (!req.session || !req.session.user) {
-//             return res.status(401).json({ message: 'Please log in first' });
-//         }
-//         if (req.session.user.role !== 'parent') {
-//             return res.status(403).json({ message: 'Only parents can create assignments' });
-//         }
-
-//         // Basic validation
-//         if (!prompt || !assignedTo || !dueDate) {
-//             return res.status(400).json({ message: 'Missing required fields' });
-//         }
-
-//         // Format prompt for the AI
-//         const formattedPrompt = `Generate ${subject || 'learning'} questions for a child in the age range ${ageRange || '6-8'}. ${prompt}`;
-
-
-
-//         // Parse the AI response into structured questions
-//         const questions = parseAIResponseToQuestions(aiResponse);
-
-//         // Create the assignment in the database
-//         const assignment = await Assignment.create({
-//             title: `AI Assignment: ${subject || prompt.substring(0, 30)}...`,
-//             description: `Generated from prompt: "${prompt}"`,
-//             questions: questions,
-//             assignedTo,
-//             assignedBy: req.session.user.username, // Get username from session
-//             dueDate: new Date(dueDate),
-//             subject: subject || 'other',
-//             ageRange: ageRange || '6-8',
-//             aiGenerated: true,
-//             aiPrompt: prompt
-//         });
-
-//         res.status(201).json({
-//             message: 'AI assignment created successfully',
-//             assignment
-//         });
-//     } catch (err) {
-//         console.error('Error creating AI assignment:', err);
-//         res.status(500).json({ error: err.message });
-//     }
-// });
-
-
-
 
 app.get('/assignments', async (req, res) => {
 
@@ -292,18 +240,18 @@ app.post('/query-prompt', async (req, res) => {
         if (req.session.user.role !== 'parent') {
             return res.status(403).json({ message: 'Only parents can create assignments' });
         }
-        const { prompt, subject, ageRange, assignedTo } = req.body;
+        const { prompt, subject, ageRange, assignedTo, difficulty } = req.body;
 
 
 
         // Validate input
-        if (!prompt || !subject || !ageRange || !assignedTo) {
+        if (!prompt || !subject || !ageRange || !assignedTo || !difficulty) {
             return res.status(400).json({ message: 'Missing required fields' });
         }
 
         // This would normally require importing your App.js module
         // For this example, we're creating a placeholder for the actual implementation
-        const response = await queryPrompt(req.body.prompt, req.body.subject, req.body.ageRange);
+        const response = await queryPrompt(req.body.prompt, req.body.subject, req.body.ageRange, req.body.difficulty);
 
         const questions = parseAIResponseToQuestions(response);
         // 3. Create a new assignment
@@ -311,6 +259,7 @@ app.post('/query-prompt', async (req, res) => {
             title: req.body.title || `${subject} Assignment - ${new Date().toLocaleDateString()}`,
             description: req.body.description || `AI-generated ${subject} assignment for ${ageRange} age range`,
             questions: questions,
+            difficulty: difficulty,
             assignedTo,
             assignedBy: req.session.user._id, // Current logged-in parent's ID
             subject: subject,
@@ -338,13 +287,13 @@ app.post('/query-prompt', async (req, res) => {
 });
 
 // Placeholder for the actual queryPrompt function that would be imported
-async function queryPrompt(prompt, subject, ageRange) {
+async function queryPrompt(prompt, subject, ageRange, difficulty) {
     // Format the content with all parameters
     const formattedContent = [
         {
             parts: [
                 {
-                    text: `Generate muitiple choice questions for a ${subject} topic, appropriate for ages ${ageRange}.\n base on request of Prompt: ${prompt}.Format your response as a numbered list (1, 2, 3) with each question and options anwer with ((a), (b), (c), (d)) and final result with (answer:). Provide the response without any characters and no introduction.`,
+                    text: `Generate muitiple choice questions for a ${subject} topic, appropriate for ages ${ageRange} and ${difficulty}.\n base on request of Prompt: ${prompt}.Format your response as a numbered list (1, 2, 3) with each question and options anwers with ((a), (b), (c), (d)) in different lines and final result with (answer:). Provide the response without any characters and no introduction.`,
                 }
             ]
         }
@@ -375,12 +324,12 @@ app.get('/assignments', async (req, res) => {
         if (req.session.user.role === 'child') {
             // Get assignments assigned to this child
             assignments = await Assignment.find({
-                assignedTo: req.session.user._id  // Use _id instead of username
+                assignedTo: req.session.user._id  
             }).sort({ dueDate: 1 });
         } else if (req.session.user.role === 'parent') {
             // Get assignments created by this parent
             assignments = await Assignment.find({
-                assignedBy: req.session.user.user._id  // Use username for now
+                assignedBy: req.session.user.user._id 
             }).sort({ dueDate: 1 });
         }
 
@@ -491,6 +440,76 @@ app.put('/update-assignment', async (req, res) => {
         res.status(500).json({ message: 'Server error updating assignment' });
     }
 });
+app.get('/assignments/completed', async (req, res) => {
+    try {
+        // Check if user is logged in
+        if (!req.session || !req.session.user) {
+            return res.status(401).json({ message: 'Please log in first' });
+        }
+        const showcompletedAssignments = req.query.completedshowAssignments === 'true';
+        if (!showcompletedAssignments) {
+            return res.status(400).json({ message: 'showcompletedAssignments query parameter is required' });
+        }
 
+        let assignments;
 
+        if (req.session.user.role === 'child') {
+            // Get assignments assigned to this child
+            assignments = await Assignment.find({
+                assignedTo: req.session.user._id,
+                status: 'completed'
+            }).sort({ dueDate: 1 });
+        } else if (req.session.user.role === 'parent') {
+            // Get assignments created by this parent
+            assignments = await Assignment.find({
+                assignedBy: req.session.user.user._id ,
+                status: 'completed'
+            }).sort({ dueDate: 1 });
+        }
+
+        res.status(200).json({
+            assignments,
+            userRole: req.session.user.role
+        });
+    } catch (error) {
+        console.error('Error fetching assignments:', error);
+        res.status(500).json({ message: 'Server error fetching assignments' });
+    }
+});
+app.get('/assignments/pending', async (req, res) => {
+    try {
+        // Check if user is logged in
+        if (!req.session || !req.session.user) {
+            return res.status(401).json({ message: 'Please log in first' });
+        }
+        const showpendingAssignments = req.query.pendingshowAssignments === 'true';
+        if (!showpendingAssignments) {
+            return res.status(400).json({ message: 'showpendingAssignments query parameter is required' });
+        }
+
+        let assignments;
+
+        if (req.session.user.role === 'child') {
+            // Get assignments assigned to this child
+            assignments = await Assignment.find({
+                assignedTo: req.session.user._id,
+                status: 'pending'
+            }).sort({ dueDate: 1 });
+        } else if (req.session.user.role === 'parent') {
+            // Get assignments created by this parent
+            assignments = await Assignment.find({
+                assignedBy: req.session.user.user._id ,
+                status: 'pending'
+            }).sort({ dueDate: 1 });
+        }
+
+        res.status(200).json({
+            assignments,
+            userRole: req.session.user.role
+        });
+    } catch (error) {
+        console.error('Error fetching assignments:', error);
+        res.status(500).json({ message: 'Server error fetching assignments' });
+    }
+});
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -17,7 +17,7 @@ function Assignment() {
     const [parentId, setParentId] = useState('');
     const [childId, setChildId] = useState('');
     const [currentUser, setCurrentUser] = useState(null);
-
+    const [difficulty, setDifficulty] = useState('easy');
     const [successMessage, setSuccessMessage] = useState('');
 
 
@@ -123,6 +123,7 @@ function Assignment() {
                     prompt,
                     subject,
                     ageRange,
+                    difficulty,
                     assignedTo: childId,
                     assignedBy: parentId,
                     dueDate: dueDate.toISOString()
@@ -135,7 +136,7 @@ function Assignment() {
             }
             
             const data = await response.json();
-            // setAIassignment(data.assignment || data.content);
+           
             
             // Show success notification or handle next steps
             console.log('Assignment created successfully:', data);
@@ -143,10 +144,7 @@ function Assignment() {
             console.log('Assignment:',data.debugquestions);
             
             setSuccessMessage('Assignment successfully generated');
-            // setPrompt('');
-            // if (onAssignmentCreated) {
-            //     onAssignmentCreated(response.data.assignment);
-            // }
+          
             setTimeout(() => {
                 navigate('/ShowAssignment');
             }, 2000);
@@ -190,6 +188,14 @@ function Assignment() {
                             <option value="6-8">6-8 years</option>
                             <option value="9-12">9-12 years</option>
                             <option value="13+">13+ years</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label>Level:</label>
+                        <select value={difficulty} onChange={e => setDifficulty(e.target.value)}>
+                            <option value="easy">Easy</option>
+                            <option value="medium">Medium</option>
+                            <option value="hard">Hard</option>
                         </select>
                     </div>
                     <div className="form-group">

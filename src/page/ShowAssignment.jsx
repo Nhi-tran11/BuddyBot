@@ -117,6 +117,9 @@ useEffect(() => {
                   <div className="assignment-status">
                     <strong>Status:</strong> {assignment.status}
                   </div>
+                  <div className="assignment-grade">
+                    <strong>Grade:</strong> {assignment.score || "Not graded yet"}
+                  </div>
                   <div className="assignment-difficulty">
                     <strong>Difficulty:</strong> {assignment.difficulty}
                   </div>
