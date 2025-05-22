@@ -190,6 +190,7 @@ app.get('/logout', (req, res) => {
 });
 
 
+
 app.get('/assignments', async (req, res) => {
 
     try {
@@ -259,7 +260,9 @@ app.post('/query-prompt', async (req, res) => {
             title: req.body.title || `${subject} Assignment - ${new Date().toLocaleDateString()}`,
             description: req.body.description || `AI-generated ${subject} assignment for ${ageRange} age range`,
             questions: questions,
+
             difficulty: difficulty,
+
             assignedTo,
             assignedBy: req.session.user._id, // Current logged-in parent's ID
             subject: subject,
@@ -293,7 +296,9 @@ async function queryPrompt(prompt, subject, ageRange, difficulty) {
         {
             parts: [
                 {
+
                     text: `Generate muitiple choice questions for a ${subject} topic, appropriate for ages ${ageRange} and ${difficulty}.\n base on request of Prompt: ${prompt}.Format your response as a numbered list (1, 2, 3) with each question and options anwers with ((a), (b), (c), (d)) in different lines and final result with (answer:). Provide the response without any characters and no introduction.`,
+
                 }
             ]
         }
@@ -324,12 +329,16 @@ app.get('/assignments', async (req, res) => {
         if (req.session.user.role === 'child') {
             // Get assignments assigned to this child
             assignments = await Assignment.find({
+
                 assignedTo: req.session.user._id  
+
             }).sort({ dueDate: 1 });
         } else if (req.session.user.role === 'parent') {
             // Get assignments created by this parent
             assignments = await Assignment.find({
+
                 assignedBy: req.session.user.user._id 
+
             }).sort({ dueDate: 1 });
         }
 
@@ -440,6 +449,7 @@ app.put('/update-assignment', async (req, res) => {
         res.status(500).json({ message: 'Server error updating assignment' });
     }
 });
+
 app.get('/assignments/completed', async (req, res) => {
     try {
         // Check if user is logged in
@@ -450,6 +460,7 @@ app.get('/assignments/completed', async (req, res) => {
         if (!showcompletedAssignments) {
             return res.status(400).json({ message: 'showcompletedAssignments query parameter is required' });
         }
+
 
         let assignments;
 

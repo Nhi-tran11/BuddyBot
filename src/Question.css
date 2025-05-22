@@ -1,3 +1,4 @@
+
 html, body {
     margin: 0;
     padding: 0;
@@ -5,8 +6,7 @@ html, body {
     background-color: #f4f4f4;
     height: 100%;
   }
-  
-  /* Assignment container */
+
 .assignment-questions {
   max-width: 600px;
   margin: 32px auto;
@@ -15,8 +15,10 @@ html, body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.07);
   padding: 32px 24px;
   font-family: 'Segoe UI', Arial, sans-serif;
+
   max-height: 90%;
   margin-bottom: 10%;
+
 }
 
 .assignment-questions strong {
@@ -41,7 +43,9 @@ html, body {
 
 .assignment-questions .question-text {
   margin-bottom: 10px;
+
   font-size: 1em;
+
 }
 
 .assignment-questions ul ul {
@@ -58,7 +62,9 @@ html, body {
   padding: 6px 16px;
   background: #fff;
   transition: background 0.18s, border 0.18s;
+
   font-size: 0.9em;
+
 }
 
 .assignment-questions ul ul li:hover {
@@ -75,6 +81,7 @@ html, body {
 .assignment-questions .error-message {
   color: #d32f2f;
   margin-bottom: 16px;
+
 }
 .footer {
   width: 100%;
@@ -87,4 +94,5 @@ html, body {
   bottom: 0;
   font-size: 1em;
   box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+
 }

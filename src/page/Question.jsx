@@ -68,8 +68,10 @@ const Question = () => {
             },
                 body: JSON.stringify({ assignmentId, score })
             });
+
                  localStorage.setItem('score', score);
             navigate('/grading', { state: { score } });
+
             if (!response.ok) {
                 throw new Error('Failed to submit answers');
             }
