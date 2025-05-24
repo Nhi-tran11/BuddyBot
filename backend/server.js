@@ -189,8 +189,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-
-
 app.get('/assignments', async (req, res) => {
 
     try {
@@ -260,9 +258,7 @@ app.post('/query-prompt', async (req, res) => {
             title: req.body.title || `${subject} Assignment - ${new Date().toLocaleDateString()}`,
             description: req.body.description || `AI-generated ${subject} assignment for ${ageRange} age range`,
             questions: questions,
-
             difficulty: difficulty,
-
             assignedTo,
             assignedBy: req.session.user._id, // Current logged-in parent's ID
             subject: subject,
@@ -296,9 +292,7 @@ async function queryPrompt(prompt, subject, ageRange, difficulty) {
         {
             parts: [
                 {
-
                     text: `Generate muitiple choice questions for a ${subject} topic, appropriate for ages ${ageRange} and ${difficulty}.\n base on request of Prompt: ${prompt}.Format your response as a numbered list (1, 2, 3) with each question and options anwers with ((a), (b), (c), (d)) in different lines and final result with (answer:). Provide the response without any characters and no introduction.`,
-
                 }
             ]
         }
@@ -403,7 +397,6 @@ app.get('/completedAssignments', async (req, res) => {
         if (req.session.user.role === 'child') {
             // Get assignments assigned to this child
             assignments = await Assignment.find({
-
                 assignedTo: req.session.user._id,
                 status: 'completed'
             }).sort({ dueDate: 1 });;
@@ -413,7 +406,6 @@ app.get('/completedAssignments', async (req, res) => {
                 assignedBy: req.session.user._id,
                 status: 'completed'
             }).sort({ dueDate: 1 });;
-
         }
 
         res.status(200).json({
@@ -433,7 +425,6 @@ app.get('/pendingAssignments', async (req, res) => {
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
         }
-
         const showPendingAssignments = req.query.showPendingAssignments === 'true';
         if (!showPendingAssignments) {
             return res.status(400).json({ message: 'showPendingAssignments query parameter is required' });
@@ -468,21 +459,16 @@ app.delete('/delete-assignment/:id', async (req, res) => {
     try {
         const assignmentId = req.params.id;
         const assignment = await Assignment.findByIdAndDelete(assignmentId);
-
-
         if (!assignment) {
             return res.status(404).json({ message: 'Assignment not found' });
         }
 
-
-
         res.status(200).json({ message: 'Assignment deleted successfully' });
-
     } catch (error) {
         console.error('Error deleting assignment:', error);
         res.status(500).json({ message: 'Server error deleting assignment' });
     }
 });
+let server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-        
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+module.exports = {app, server};

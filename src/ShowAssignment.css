@@ -21,8 +21,6 @@ html, body {
     padding-bottom: 10px;
   }
   
-
-
   .assignment-buttons {
   display: flex;
   flex-direction: row;
@@ -46,7 +44,6 @@ html, body {
 .assignment-buttons button:hover {
   background-color: #388e3c;
 }
-
   .error-message {
     color: #d93025;
     background-color: #fde7e9;
