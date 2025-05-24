@@ -1,90 +1,81 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    height: 100%;
-  }
-  
-  /* Assignment container */
 .assignment-questions {
-  max-width: 600px;
-  margin: 32px auto;
-  background: #f9f9fb;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.assignment-questions {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 24px;
+  background: #f9f9f9;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  padding: 32px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
   font-family: 'Segoe UI', Arial, sans-serif;
-  max-height: 90%;
-  margin-bottom: 10%;
 }
 
 .assignment-questions strong {
   font-size: 1.2em;
-  color: #2d3a4a;
+  color: #333;
 }
 
 .assignment-questions ul {
-  margin: 0;
+  margin: 0 0 16px 0;
   padding: 0;
 }
 
-.assignment-questions > ul > li {
-  margin-bottom: 28px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e0e0e0;
+.assignment-questions li {
+  margin-bottom: 12px;
 }
 
-.assignment-questions > ul > li:last-child {
-  border-bottom: none;
+.selected-option {
+  background: #e6f7ff;
+  border-color: #1890ff;
+  color: #1890ff;
 }
 
-.assignment-questions .question-text {
-  margin-bottom: 10px;
-  font-size: 1em;
+.selected-option.correct {
+  background: #e6ffe6;
+  border-color: #52c41a;
+  color: #389e0d;
 }
 
-.assignment-questions ul ul {
-  margin-top: 8px;
+.selected-option.wrong {
+  background: #fff1f0;
+  border-color: #ff4d4f;
+  color: #a8071a;
 }
 
-.assignment-questions ul ul li {
-  display: inline-block;
-  margin-right: 12px;
-  margin-bottom: 6px;
-  cursor: pointer;
-  border: 1.5px solid #bfc8d6;
-  border-radius: 6px;
-  padding: 6px 16px;
-  background: #fff;
-  transition: background 0.18s, border 0.18s;
-  font-size: 0.9em;
-}
-
-.assignment-questions ul ul li:hover {
-  background: #e6f0ff;
-  border-color: #4a90e2;
-}
-
-.assignment-questions .selected-option {
-  background: #4a90e2;
+.assignment-questions button {
+  margin: 16px 8px 0 0;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  background: #1890ff;
   color: #fff;
-  border-color: #357ab8;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-.assignment-questions .error-message {
-  color: #d32f2f;
-  margin-bottom: 16px;
+.assignment-questions button:hover {
+  background: #40a9ff;
 }
-.footer {
-  width: 100%;
-  background: #e9e9ef;
-  color: #2d3a4a;
-  text-align: center;
-  padding: 18px 0;
-  position: fixed;
-  left: 0;
+
+.assignment-questions .correct span {
+  color: #389e0d;
+}
+
+.assignment-questions .wrong span {
+  color: #a8071a;
+}
+.button-container {
+  position: sticky;
   bottom: 0;
-  font-size: 1em;
-  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+  left: 0;
+  background: #f9f9f9;
+  padding: 16px 0 0 0;
+  display: flex;
+  gap: 12px;
+  z-index: 10;
+  border-top: 1px solid #e0e0e0;
+  justify-content: flex-end;
 }

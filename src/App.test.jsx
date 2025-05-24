@@ -3,6 +3,8 @@ import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
 import App from './App';
 import { describe, it, expect } from 'vitest';
 
+
+
 describe('App Component', () => {
   it('renders the App component without crashing', () => {
     render(

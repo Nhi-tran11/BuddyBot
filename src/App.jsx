@@ -16,7 +16,6 @@ import SubjectDetail from './page/SubjectDetail';
 import LogOut from './page/LogOut';
 import Question from './page/Question';
 import GradingAssignment from './page/GradingAssignment';
-
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
 
@@ -47,7 +46,7 @@ function App() {
         <Route path="/grading" element={<GradingAssignment />} />
 
       </Routes>
-  
+
       <Footer />
     </div>
   );
