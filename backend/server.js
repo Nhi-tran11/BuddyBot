@@ -313,54 +313,12 @@ async function queryPrompt(prompt, subject, ageRange, difficulty) {
     return response.text;
 }
 
-app.get('/assignments', async (req, res) => {
-    try {
-        // Check if user is logged in
-        if (!req.session || !req.session.user) {
-            return res.status(401).json({ message: 'Please log in first' });
-        }
-        const showAssignments = req.query.showAssignments === 'true';
-        if (!showAssignments) {
-            return res.status(400).json({ message: 'showAssignments query parameter is required' });
-        }
 
-        let assignments;
 
-        if (req.session.user.role === 'child') {
-            // Get assignments assigned to this child
-            assignments = await Assignment.find({
-
-                assignedTo: req.session.user._id  
-
-            }).sort({ dueDate: 1 });
-        } else if (req.session.user.role === 'parent') {
-            // Get assignments created by this parent
-            assignments = await Assignment.find({
-
-                assignedBy: req.session.user.user._id 
-
-            }).sort({ dueDate: 1 });
-        }
-
-        res.status(200).json({
-            assignments,
-            userRole: req.session.user.role
-        });
-    } catch (error) {
-        console.error('Error fetching assignments:', error);
-        res.status(500).json({ message: 'Server error fetching assignments' });
-    }
-});
-
-// Endpoint to mark assignment as completed
-app.put('/assignments/:id/complete', async (req, res) => {
+app.get('/assignments/:id', async (req, res) => {
     try {
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
-        }
-
-        if (req.session.user.role !== 'child') {
-            return res.status(403).json({ message: 'Only children can complete assignments' });
         }
 
         const assignment = await Assignment.findById(req.params.id);
@@ -369,18 +327,10 @@ app.put('/assignments/:id/complete', async (req, res) => {
             return res.status(404).json({ message: 'Assignment not found' });
         }
 
-        if (assignment.assignedTo !== req.session.user.username) {
-            return res.status(403).json({ message: 'This assignment is not assigned to you' });
-        }
-
-        assignment.completed = true;
-        assignment.completedDate = new Date();
-        await assignment.save();
-
-        res.status(200).json({ message: 'Assignment marked as completed', assignment });
+        res.status(200).json({ assignment });
     } catch (error) {
-        console.error('Error completing assignment:', error);
-        res.status(500).json({ message: 'Server error completing assignment' });
+        console.error('Error fetching assignment:', error);
+        res.status(500).json({ message: 'Server error fetching assignment' });
     }
 });
 function parseAIResponseToQuestions(aiResponse) {
@@ -419,19 +369,6 @@ function parseAIResponseToQuestions(aiResponse) {
     });
 }
 
-// Get assignment by ID
-app.get('/assignments/:id', async (req, res) => {
-    try {
-        const assignment = await Assignment.findById(req.params.id);
-        if (!assignment) {
-            return res.status(404).json({ message: 'Assignment not found' });
-        }
-        res.status(200).json(assignment);
-    } catch (error) {
-        console.error('Error fetching assignment:', error);
-        res.status(500).json({ message: 'Server error fetching assignment' });
-    }
-});
 app.put('/update-assignment', async (req, res) => {
     try {
         const { assignmentId, score } = req.body;
@@ -449,33 +386,34 @@ app.put('/update-assignment', async (req, res) => {
         res.status(500).json({ message: 'Server error updating assignment' });
     }
 });
+app.get('/completedAssignments', async (req, res) => {
 
-app.get('/assignments/completed', async (req, res) => {
     try {
-        // Check if user is logged in
+        //Check if user is logged in
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
         }
-        const showcompletedAssignments = req.query.completedshowAssignments === 'true';
-        if (!showcompletedAssignments) {
-            return res.status(400).json({ message: 'showcompletedAssignments query parameter is required' });
+        const showCompletedAssignments = req.query.showCompletedAssignments === 'true';
+        if (!showCompletedAssignments) {
+            return res.status(400).json({ message: 'showCompletedAssignments query parameter is required' });
         }
-
 
         let assignments;
 
         if (req.session.user.role === 'child') {
             // Get assignments assigned to this child
             assignments = await Assignment.find({
+
                 assignedTo: req.session.user._id,
                 status: 'completed'
-            }).sort({ dueDate: 1 });
+            }).sort({ dueDate: 1 });;
         } else if (req.session.user.role === 'parent') {
             // Get assignments created by this parent
             assignments = await Assignment.find({
-                assignedBy: req.session.user.user._id ,
+                assignedBy: req.session.user._id,
                 status: 'completed'
-            }).sort({ dueDate: 1 });
+            }).sort({ dueDate: 1 });;
+
         }
 
         res.status(200).json({
@@ -487,15 +425,18 @@ app.get('/assignments/completed', async (req, res) => {
         res.status(500).json({ message: 'Server error fetching assignments' });
     }
 });
-app.get('/assignments/pending', async (req, res) => {
+
+
+app.get('/pendingAssignments', async (req, res) => {
     try {
         // Check if user is logged in
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
         }
-        const showpendingAssignments = req.query.pendingshowAssignments === 'true';
-        if (!showpendingAssignments) {
-            return res.status(400).json({ message: 'showpendingAssignments query parameter is required' });
+
+        const showPendingAssignments = req.query.showPendingAssignments === 'true';
+        if (!showPendingAssignments) {
+            return res.status(400).json({ message: 'showPendingAssignments query parameter is required' });
         }
 
         let assignments;
@@ -509,7 +450,7 @@ app.get('/assignments/pending', async (req, res) => {
         } else if (req.session.user.role === 'parent') {
             // Get assignments created by this parent
             assignments = await Assignment.find({
-                assignedBy: req.session.user.user._id ,
+                assignedBy: req.session.user._id ,
                 status: 'pending'
             }).sort({ dueDate: 1 });
         }
@@ -523,4 +464,25 @@ app.get('/assignments/pending', async (req, res) => {
         res.status(500).json({ message: 'Server error fetching assignments' });
     }
 });
+app.delete('/delete-assignment/:id', async (req, res) => {
+    try {
+        const assignmentId = req.params.id;
+        const assignment = await Assignment.findByIdAndDelete(assignmentId);
+
+
+        if (!assignment) {
+            return res.status(404).json({ message: 'Assignment not found' });
+        }
+
+
+
+        res.status(200).json({ message: 'Assignment deleted successfully' });
+
+    } catch (error) {
+        console.error('Error deleting assignment:', error);
+        res.status(500).json({ message: 'Server error deleting assignment' });
+    }
+});
+
+        
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

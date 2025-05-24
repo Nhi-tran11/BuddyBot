@@ -11,19 +11,21 @@ const Question = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [role, setRole] = useState(localStorage.getItem('role') || '');
+
   useEffect(() => {
     if (location.state && location.state.assignmentId) {
       setAssignmentId(location.state.assignmentId);
       localStorage.setItem('assignmentId', location.state.assignmentId);
+
+      localStorage.setItem('role', location.state.role);
+      setRole(location.state.role);
     } else {
-      const storedAssignmentId = localStorage.getItem('assignmentId');
-      if (storedAssignmentId) {
-        setAssignmentId(storedAssignmentId);
-      } else {
-        setError("No assignment ID found");
-      }
+      setError("No assignment ID found");
     }
   }, [location]);
+  
+
 
   useEffect(() => {
     if (!assignmentId) return;
@@ -78,6 +80,18 @@ const Question = () => {
             // Optionally handle response here
         } catch (error) {
             setError("Failed to submit answers");
+        }
+      }
+
+
+      const handleBack = async (e) => {
+        e.preventDefault();
+        setError('');
+        try {
+            
+            navigate('/showassignment');
+        } catch (error) {
+            setError("Could not navigate back");
         }
       }
 
@@ -137,13 +151,30 @@ const Question = () => {
               <div style={{ marginTop: 20 }}>
               <strong>Score: {score} / {assignment?.questions?.length || 0}</strong>
               </div>
-              <div>
-              <button
-                type="button"
-                onClick={handleSubmit}
-              >
-                Submit
-              </button>
+
+              <div className='button-container'>
+                {role === "parent" && (
+                  <>
+                 
+                    <button type="button" onClick={handleBack}>
+                      Back to Assignments
+                    </button>
+                  </>
+                )}
+                {role === "child" && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleSubmit}
+                    >
+                      Submit
+                    </button>
+                    <button type="button" onClick={handleBack}>
+                      Back to Assignments
+                    </button>
+                  </>
+                )}
+
               </div>
             </div>
             );
