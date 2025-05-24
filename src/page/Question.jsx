@@ -21,7 +21,6 @@ const Question = () => {
       setError("No assignment ID found");
     }
   }, [location]);
-  
 
   useEffect(() => {
     if (!assignmentId) return;
@@ -68,6 +67,7 @@ const Question = () => {
             });
                  localStorage.setItem('score', score);
             navigate('/grading', { state: { score } });
+
             if (!response.ok) {
                 throw new Error('Failed to submit answers');
             }
@@ -76,7 +76,7 @@ const Question = () => {
             setError("Failed to submit answers");
         }
       }
-
+ 
       const handleBack = async (e) => {
         e.preventDefault();
         setError('');

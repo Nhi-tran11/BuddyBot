@@ -189,7 +189,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-
 app.get('/assignments', async (req, res) => {
 
     try {
@@ -460,11 +459,9 @@ app.delete('/delete-assignment/:id', async (req, res) => {
     try {
         const assignmentId = req.params.id;
         const assignment = await Assignment.findByIdAndDelete(assignmentId);
-
         if (!assignment) {
             return res.status(404).json({ message: 'Assignment not found' });
         }
-
 
         res.status(200).json({ message: 'Assignment deleted successfully' });
     } catch (error) {
@@ -472,6 +469,7 @@ app.delete('/delete-assignment/:id', async (req, res) => {
         res.status(500).json({ message: 'Server error deleting assignment' });
     }
 });
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 module.exports = app;
