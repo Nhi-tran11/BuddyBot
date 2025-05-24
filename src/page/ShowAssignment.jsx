@@ -166,6 +166,7 @@ useEffect(() => {
       <h2>Assignments</h2>
 
       <div className="assignment-buttons">
+
         <button
           type="button"
           onClick={() => {
@@ -201,6 +202,7 @@ useEffect(() => {
             type="button"
             onClick={() => setGenerateQuestion(!generateQuestion)}
           >
+
             Generate Question
           </button>
         )}
@@ -210,6 +212,7 @@ useEffect(() => {
       <div className="assignment-form"></div>
 
       {showAssignments && (
+
         <div className="child-assignments">
           {assignments.length === 0 ? (
             <p>No assignments found for this child.</p>
@@ -269,6 +272,7 @@ useEffect(() => {
       )}
 
       {showCompletedAssignments && (
+
         <div className="child-assignments">
           {assignments.length === 0 ? (
             <p>No assignments found for this child.</p>
@@ -278,7 +282,9 @@ useEffect(() => {
                 <li
                   key={assignment._id}
                   className="assignment-item"
+
                   onClick={() => navigate(`/Question/${assignment._id}`, { state: { assignmentId: assignment._id, role: role } })}
+
                   style={{ cursor: "pointer" }}
                 >
                   <h4>{assignment.title} - {assignment.subject}</h4>
@@ -286,6 +292,7 @@ useEffect(() => {
                   <div className="assignment-description">
                     <strong>Description:</strong> {assignment.description}
                   </div>
+
                   <div className="assignment-status">
                     <strong>Status:</strong> {assignment.status}
                   </div>
@@ -343,6 +350,7 @@ useEffect(() => {
                   <div className="assignment-description">
                     <strong>Description:</strong> {assignment.description}
                   </div>
+
                   <div className="assignment-status">
                     <strong>Status:</strong> {assignment.status}
                   </div>

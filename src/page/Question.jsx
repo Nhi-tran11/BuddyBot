@@ -10,11 +10,14 @@ const Question = () => {
   const [score, setScore] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
+
   const [role, setRole] = useState(localStorage.getItem('role') || '');
+
   useEffect(() => {
     if (location.state && location.state.assignmentId) {
       setAssignmentId(location.state.assignmentId);
       localStorage.setItem('assignmentId', location.state.assignmentId);
+
       localStorage.setItem('role', location.state.role);
       setRole(location.state.role);
     } else {
@@ -22,6 +25,7 @@ const Question = () => {
     }
   }, [location]);
   
+
 
   useEffect(() => {
     if (!assignmentId) return;
@@ -66,8 +70,10 @@ const Question = () => {
             },
                 body: JSON.stringify({ assignmentId, score })
             });
+
                  localStorage.setItem('score', score);
             navigate('/grading', { state: { score } });
+
             if (!response.ok) {
                 throw new Error('Failed to submit answers');
             }
@@ -76,6 +82,7 @@ const Question = () => {
             setError("Failed to submit answers");
         }
       }
+
 
       const handleBack = async (e) => {
         e.preventDefault();
@@ -87,6 +94,7 @@ const Question = () => {
             setError("Could not navigate back");
         }
       }
+
   return (
     <div className="assignment-questions">
       <strong>Your assignment</strong>
@@ -143,6 +151,7 @@ const Question = () => {
               <div style={{ marginTop: 20 }}>
               <strong>Score: {score} / {assignment?.questions?.length || 0}</strong>
               </div>
+
               <div className='button-container'>
                 {role === "parent" && (
                   <>
@@ -165,6 +174,7 @@ const Question = () => {
                     </button>
                   </>
                 )}
+
               </div>
             </div>
             );
