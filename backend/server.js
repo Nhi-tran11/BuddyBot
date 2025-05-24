@@ -469,7 +469,6 @@ app.delete('/delete-assignment/:id', async (req, res) => {
         res.status(500).json({ message: 'Server error deleting assignment' });
     }
 });
+let server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-module.exports = app;
+module.exports = {app, server};

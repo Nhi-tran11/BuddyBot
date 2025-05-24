@@ -25,12 +25,13 @@ beforeAll(() => {
 });
 
 
+let {app, server} = require('./server'); // server.js should export the app
 
 afterAll(() => {
     jest.clearAllMocks();
+    server.close();
 });
 
-let app = require('./server'); // server.js should export the app
 
 describe('User endpoints', () => {
     describe('POST /login', () => {
