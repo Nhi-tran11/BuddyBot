@@ -1,71 +1,90 @@
-# Getting Started with Create React App
+# BuddyBot - Learning Made Magical!
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+BuddyBot is an educational platform designed to make learning fun and interactive for children. It offers features such as engaging lessons, quizzes, and educational games. Parents can create personalized timetables for their children, use AI to generate customized assignments, and track their child’s learning progress. The platform aims to support both kids and parents by providing a structured yet enjoyable learning experience.
 
-## Available Scripts
+## Project Structure
 
-In the project directory, you can run:
+```
+/
+├── backend/         # Node.js/Express backend (API, DB, AI integration)
+├── src/             # React frontend source code
+├── public/          # Static assets for frontend
+├── build/           # Production build output
+├── index.html       # Main HTML entry point
+├── package.json     # Frontend dependencies and scripts
+└── README.md
+```
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js (v16+ recommended)
+- npm (v8+ recommended)
+- MongoDB (local or cloud instance)
+- Google Gemini's API key
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+---
 
-### `npm test`
+## 1. Start the Backend
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. Open a terminal and navigate to the `backend` directory:
+    ```sh
+    cd backend
+    ```
 
-### `npm run build`
+2. Install backend dependencies:
+    ```sh
+    npm install
+    ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. Create a `.env` file in the `backend` directory with the following variables:
+    ```
+    MONGODB_URI=your_mongodb_connection_string
+    PORT=5000
+    API_KEY=your_google_genai_api_key
+    ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. Start the backend server:
+    ```sh
+    npm run dev
+    ```
+    The backend will run on [http://localhost:5000](http://localhost:5000).
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 2. Start the Frontend
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Open a new terminal and navigate to the project root (where `package.json` is located).
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Install frontend dependencies:
+    ```sh
+    npm install
+    ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Start the React development server:
+    ```sh
+    npm start
+    ```
+    The frontend will run on [http://localhost:3000](http://localhost:3000).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## 3. Running Unit Tests
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Frontend (React)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+From the project root, run:
+```sh
+npm test
+```
+This will launch the test runner for the React app (using [Vitest](https://vitest.dev/) and [@testing-library/react](https://testing-library.com/)).
 
-### Code Splitting
+### Backend (Node.js/Express)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+From the `backend` directory, run:
+```sh
+npm run test
+```
+This will run backend tests using [Jest](https://jestjs.io/) and [Supertest](https://github.com/ladjs/supertest).
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
 
