@@ -344,6 +344,57 @@ useEffect(() => {
                   <div className="assignment-description">
                     <strong>Description:</strong> {assignment.description}
                   </div>
+                  <div className="assignment-difficulty">
+                    <strong>Difficulty:</strong> {assignment.difficulty}
+                  </div>
+                  {role === 'parent' && (
+                    <button
+                      type="button"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        const response = await fetch(`http://localhost:5000/delete-assignment/${assignment._id}`, {
+                          method: 'DELETE',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          }
+                        });
+
+                        if (response.ok) {
+                          alert('Assignment deleted successfully');
+                          fetchAssignments();
+                        } else {
+                          alert('Failed to delete assignment');
+                        }
+                      }}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      )}
+
+      {showPendingAssignments && (
+        <div className="child-assignments">
+          {assignments.length === 0 ? (
+            <p>No assignments found for this child.</p>
+          ) : (
+            <ul className="assignments-list">
+              {assignments.map(assignment => (
+                <li
+                  key={assignment._id}
+                  className="assignment-item"
+                  onClick={() => navigate(`/Question/${assignment._id}`, { state: { assignmentId: assignment._id, role: role } })}
+                  style={{ cursor: "pointer" }}
+                >
+                  <h4>{assignment.title} - {assignment.subject}</h4>
+                  <p><strong>Due:</strong> {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : "N/A"}</p>
+                  <div className="assignment-description">
+                    <strong>Description:</strong> {assignment.description}
+                  </div>
 
                   <div className="assignment-status">
                     <strong>Status:</strong> {assignment.status}

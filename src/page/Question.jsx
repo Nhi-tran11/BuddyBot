@@ -69,7 +69,6 @@ const Question = () => {
           navigate('/grading', { state: { score } });
             localStorage.removeItem('assignmentId');
             localStorage.removeItem('role');
-
             if (!response.ok) {
                 throw new Error('Failed to submit answers');
             }

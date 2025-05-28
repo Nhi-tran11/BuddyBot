@@ -438,6 +438,7 @@ app.get('/completedAssignments', async (req, res) => {
                 assignedBy: req.session.user._id,
                 status: 'completed'
             });
+
         }
 
         // Respond with the completed assignments and the user's role
@@ -460,6 +461,7 @@ app.get('/pendingAssignments', async (req, res) => {
             return res.status(401).json({ message: 'Please log in first' });
         }
         // Check if the showPendingAssignments query parameter is provided and true
+
         const showPendingAssignments = req.query.showPendingAssignments === 'true';
         if (!showPendingAssignments) {
             return res.status(400).json({ message: 'showPendingAssignments query parameter is required' });
