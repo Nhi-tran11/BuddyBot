@@ -18,6 +18,7 @@ BuddyBot is an educational platform designed to make learning fun and interactiv
 ## Prerequisites
 
 - Node.js (v16+ recommended)
+- React v19.1.0
 - npm (v8+ recommended)
 - MongoDB (local or cloud instance)
 - Google Gemini's API key
