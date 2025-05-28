@@ -28,6 +28,7 @@ function LogOut() {
    
           setIsLoggedOut(true);
           navigate('/login');
+          localStorage.removeItem('role'); // Clear role from local storage
         }
       } catch (error) {
         console.log('Non-JSON response or parsing error:', error);

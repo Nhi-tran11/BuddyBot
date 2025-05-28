@@ -36,109 +36,128 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const PORT = process.env.PORT;
 
+// Endpoint for user login
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
 
     try {
+        // Find user by username
         const user = await User.findOne({ username });
-        // Check if the user exists
         if (user) {
-            // Check if the password is correct
+            // Check if the password matches
             if (user.password === password) {
                 // Store user info in session
                 req.session.user = user;
                 req.session.save(err => {
                     if (err) console.error('Session save error:', err);
+                    // Log session info for debugging
                     console.log('Session:', req.session);
                     console.log('Session:', req.session.id);
+                    // Respond with success and user info (excluding sensitive data)
                     return res.json({ message: 'Login successful', user: { username: user.username, role: user.role } });
                 });
             } else {
+                // Password is incorrect
                 return res.status(400).json({ message: 'Password is incorrect' });
             }
         } else {
+            // User not found
             return res.status(400).json({ message: 'User not found' });
         }
     } catch (err) {
+        // Handle server errors
         console.error('Login error:', err);
         return res.status(500).json({ message: 'Server error during login' });
     }
-})
+});
 
-
+// Endpoint to sign up a child account
 app.post('/signupChild', (req, res) => {
-    // const { username, password } = req.body;
-    const { username, password } = req.body;
+    const { username, password } = req.body; // Extract username and password from request body
+
+    // Check if the username is already taken
     User.findOne({ username })
         .then(existingUser => {
             if (existingUser) {
+                // If username exists, reject the request
                 return Promise.reject({ status: 400, message: 'Username already taken' });
             }
-            // If the username is available, create the child account
+            // If username is available, create the child account with role 'child'
             return User.create({
                 ...req.body,
                 role: 'child',  // Ensure the role is set as child
             });
         })
-
+        // Respond with success message and created user info
         .then(result => res.json({ message: 'Child account created successfully', user: result }))
         .catch(err => {
+            // Handle errors and send appropriate response
             if (err.status) {
                 res.status(err.status).json({ message: err.message });
             } else {
                 res.status(500).json({ error: err.message });
             }
         });
-})
+});
 
+// Endpoint for user signup (parent account)
 app.post('/signup', (req, res) => {
     const { email, username } = req.body;
-    // Check if the user already exists
+    // Check if a user with the same email already exists
     User.findOne({ email })
         .then(existingUser => {
             if (existingUser) {
+                // If email is already in use, reject the request
                 return Promise.reject({ status: 400, message: 'Email already in use' });
             }
-
-            // Also check if username already exists
+            // Check if the username is already taken
             return User.findOne({ username });
         })
         .then(existingUsername => {
             if (existingUsername) {
+                // If username is already taken, reject the request
                 return Promise.reject({ status: 400, message: 'Username already taken' });
             }
-            // If both checks pass, continue to create user
+            // If both checks pass, create the new user
             return User.create(req.body);
         })
         .then(result => {
+            // Respond with success message and created user info
             res.json({ message: 'Your account is created successfully', user: result });
         })
         .catch(err => {
+            // Handle errors and send appropriate response
             if (err.status) {
                 res.status(err.status).json({ message: err.message });
             } else {
                 res.status(500).json({ error: err.message });
             }
         });
-})
+});
 
+// Endpoint to get the current logged-in user's session info
 app.get('/session/current-user', (req, res) => {
+    // Check if the user is logged in (session exists)
     if (!req.session || !req.session.user) {
+        // If not logged in, return 401 Unauthorized
         return res.status(401).json({ message: 'Please login first to generate assignments for your monster' });
     }
+    // Prepare user info to send (do not send sensitive data)
     const user = {
         username: req.session.user.username,
         role: req.session.user.role,
         isParent: req.session.user.role === 'parent',
         isChild: req.session.user.role === 'child'
     };
+    // Respond with user info and logged-in status
     return res.status(200).json({
         user: user,
         isLoggedIn: true
     });
-})
+});
 
 
+// Endpoint to get all children accounts linked to the current parent session
 app.get('/session/user-children', async (req, res) => {
     try {
         // Check if user is logged in
@@ -149,26 +168,26 @@ app.get('/session/user-children', async (req, res) => {
         // Find children linked to the logged-in parent
         const children = await User.find({ parentId: req.session.user._id });
 
-        // Check if there are any children associated with this parent
+        // If no children are associated with this parent, return an empty array and message
         if (children.length === 0) {
-
             return res.status(200).json({
                 children: [],
                 message: "You don't have any child accounts yet. Please sign up a child account first."
-
             });
         }
-        // Check if user is a parent
+
+        // Only allow parents to view their children
         if (req.session.user.role !== 'parent') {
             return res.status(403).json({ message: 'Only parents can view their children' });
         }
-        // Store children in session for easy access from frontend
 
+        // Store children info in session for frontend access (optional)
         req.session.children = children.map(child => ({
             _id: child._id,
             username: child.username,
             role: child.role
         }));
+
         // Send the children data back to the client
         res.status(200).json({ children: req.session.children });
     } catch (err) {
@@ -176,6 +195,8 @@ app.get('/session/user-children', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+// Endpoint to log out the current user and destroy the session
 app.get('/logout', (req, res) => {
     // Destroy the session
     req.session.destroy(err => {
@@ -189,13 +210,15 @@ app.get('/logout', (req, res) => {
     });
 });
 
+// Endpoint to get all assignments for the current user (parent or child)
 app.get('/assignments', async (req, res) => {
-
     try {
         // Check if user is logged in
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
         }
+
+        // Check if the showAssignments query parameter is provided and true
         const showAssignments = req.query.showAssignments === 'true';
         if (!showAssignments) {
             return res.status(400).json({ message: 'showAssignments query parameter is required' });
@@ -203,23 +226,26 @@ app.get('/assignments', async (req, res) => {
 
         let assignments;
 
+        // If the user is a child, fetch assignments assigned to them
         if (req.session.user.role === 'child') {
-            // Get assignments assigned to this child
             assignments = await Assignment.find({
                 assignedTo: req.session.user._id
             }).sort({ dueDate: 1 });
-        } else if (req.session.user.role === 'parent') {
-            // Get assignments created by this parent
+        } 
+        // If the user is a parent, fetch assignments they created
+        else if (req.session.user.role === 'parent') {
             assignments = await Assignment.find({
                 assignedBy: req.session.user._id
             }).sort({ dueDate: 1 });
         }
 
+        // Respond with the assignments and the user's role
         res.status(200).json({
             assignments,
             userRole: req.session.user.role
         });
     } catch (error) {
+        // Handle server errors
         console.error('Error fetching assignments:', error);
         res.status(500).json({ message: 'Server error fetching assignments' });
     }
@@ -362,31 +388,37 @@ function parseAIResponseToQuestions(aiResponse) {
         };
     });
 }
-
+// Endpoint to update an assignment's score and mark as completed
 app.put('/update-assignment', async (req, res) => {
     try {
         const { assignmentId, score } = req.body;
+        // Update the assignment with the given ID, set score and status to 'completed'
         const assignment = await Assignment.findByIdAndUpdate(assignmentId, {
             score: score,
             status: 'completed'
         }, { new: true });
 
         if (!assignment) {
+            // If assignment not found, return 404
             return res.status(404).json({ message: 'Assignment not found' });
         }
+        // Respond with success and updated assignment
         res.status(200).json({ message: 'Assignment updated successfully', assignment });
     } catch (error) {
+        // Handle server errors
         console.error('Error updating assignment:', error);
         res.status(500).json({ message: 'Server error updating assignment' });
     }
 });
-app.get('/completedAssignments', async (req, res) => {
 
+//Endpoint to get all completed assignments for the current user (parent or child)
+app.get('/completedAssignments', async (req, res) => {
     try {
-        //Check if user is logged in
+        // Check if user is logged in
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
         }
+        // Check if the showCompletedAssignments query parameter is provided and true
         const showCompletedAssignments = req.query.showCompletedAssignments === 'true';
         if (!showCompletedAssignments) {
             return res.status(400).json({ message: 'showCompletedAssignments query parameter is required' });
@@ -395,36 +427,39 @@ app.get('/completedAssignments', async (req, res) => {
         let assignments;
 
         if (req.session.user.role === 'child') {
-            // Get assignments assigned to this child
+            // Get assignments assigned to this child with status 'completed'
             assignments = await Assignment.find({
                 assignedTo: req.session.user._id,
                 status: 'completed'
-            }).sort({ dueDate: 1 });;
+            });
         } else if (req.session.user.role === 'parent') {
-            // Get assignments created by this parent
+            // Get assignments created by this parent with status 'completed'
             assignments = await Assignment.find({
                 assignedBy: req.session.user._id,
                 status: 'completed'
-            }).sort({ dueDate: 1 });;
+            });
         }
 
+        // Respond with the completed assignments and the user's role
         res.status(200).json({
             assignments,
             userRole: req.session.user.role
         });
     } catch (error) {
+        // Handle server errors
         console.error('Error fetching assignments:', error);
         res.status(500).json({ message: 'Server error fetching assignments' });
     }
 });
 
-
+// Endpoint to get all pending assignments for the current user (parent or child)
 app.get('/pendingAssignments', async (req, res) => {
     try {
         // Check if user is logged in
         if (!req.session || !req.session.user) {
             return res.status(401).json({ message: 'Please log in first' });
         }
+        // Check if the showPendingAssignments query parameter is provided and true
         const showPendingAssignments = req.query.showPendingAssignments === 'true';
         if (!showPendingAssignments) {
             return res.status(400).json({ message: 'showPendingAssignments query parameter is required' });
@@ -432,39 +467,48 @@ app.get('/pendingAssignments', async (req, res) => {
 
         let assignments;
 
+        // If the user is a child, fetch their pending assignments
         if (req.session.user.role === 'child') {
-            // Get assignments assigned to this child
             assignments = await Assignment.find({
                 assignedTo: req.session.user._id,
                 status: 'pending'
-            }).sort({ dueDate: 1 });
-        } else if (req.session.user.role === 'parent') {
-            // Get assignments created by this parent
+            });
+        } 
+        // If the user is a parent, fetch pending assignments they created
+        else if (req.session.user.role === 'parent') {
             assignments = await Assignment.find({
-                assignedBy: req.session.user._id ,
+                assignedBy: req.session.user._id,
                 status: 'pending'
-            }).sort({ dueDate: 1 });
+            });
         }
 
+        // Respond with the assignments and the user's role
         res.status(200).json({
             assignments,
             userRole: req.session.user.role
         });
     } catch (error) {
+        // Handle server errors
         console.error('Error fetching assignments:', error);
         res.status(500).json({ message: 'Server error fetching assignments' });
     }
 });
+
+// Endpoint to delete an assignment by its ID
 app.delete('/delete-assignment/:id', async (req, res) => {
     try {
         const assignmentId = req.params.id;
+        // Find and delete the assignment by ID
         const assignment = await Assignment.findByIdAndDelete(assignmentId);
         if (!assignment) {
+            // If assignment not found, return 404
             return res.status(404).json({ message: 'Assignment not found' });
         }
 
+        // Respond with success message
         res.status(200).json({ message: 'Assignment deleted successfully' });
     } catch (error) {
+        // Handle server errors
         console.error('Error deleting assignment:', error);
         res.status(500).json({ message: 'Server error deleting assignment' });
     }

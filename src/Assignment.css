@@ -1,3 +1,11 @@
+.App {
+  text-align: center;
+}
+body{
+  font-family: Verdana, sans-serif;
+  font-size: 16px;
+  max-height: 100%;
+}
 
 .ai-assignment-form {
     padding: 2rem;
