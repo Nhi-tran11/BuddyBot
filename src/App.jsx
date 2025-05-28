@@ -18,7 +18,7 @@ import Question from './page/Question';
 import GradingAssignment from './page/GradingAssignment';
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
-
+import ErrorBoundary from './ErrorBoundary';
 
 function App() {
 
@@ -29,6 +29,7 @@ function App() {
       <Header />
 
       <Navbar />
+      <ErrorBoundary>
       <Routes>
         <Route path="/" element={<Home />} />
       
@@ -46,7 +47,7 @@ function App() {
         <Route path="/grading" element={<GradingAssignment />} />
 
       </Routes>
-
+</ErrorBoundary>
       <Footer />
     </div>
   );

@@ -1,9 +1,12 @@
+import React from "react";
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom'; // Import BrowserRouter
 import App from './App';
 import { describe, it, expect } from 'vitest';
 
-
+/**
+ * @vitest-environment jsdom
+ */
 
 describe('App Component', () => {
   it('renders the App component without crashing', () => {

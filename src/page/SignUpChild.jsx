@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import '../SignUpChild.css';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
 
 function SignUpChild() {
   const [username, setUserName] = useState('');

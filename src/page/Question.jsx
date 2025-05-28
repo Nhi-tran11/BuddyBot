@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import "../Question.css";
-
+import React from "react";
 const Question = () => {
   const [assignmentId, setAssignmentId] = useState('');
   const [assignment, setAssignment] = useState(null);
@@ -37,7 +37,7 @@ const Question = () => {
   // Handle answer selection
   const handleOptionClick = (qIdx, oIdx) => {
     if (!assignment || !assignment.questions[qIdx]) return;
-    // Get the correct answer letter (e.g. "B")
+    // Get the correct answer letter 
     const correctLetter = assignment.questions[qIdx].answer;
     // The user's selected letter (A, B, C, D, ...)
     const selectedLetter = String.fromCharCode(65 + oIdx);
@@ -58,16 +58,17 @@ const Question = () => {
        
         setError('');
         try {
-            const response = await fetch(`http://localhost:5000/update-assignment`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-            },
-                body: JSON.stringify({ assignmentId, score })
-            });
-                 localStorage.setItem('score', score);
-            navigate('/grading', { state: { score } });
-
+          const response = await fetch(`http://localhost:5000/update-assignment`, {
+              method: 'PUT',
+              headers: {
+                  'Content-Type': 'application/json'
+          },
+              body: JSON.stringify({ assignmentId, score })
+          });
+               localStorage.setItem('score', score);
+          navigate('/grading', { state: { score } });
+            localStorage.removeItem('assignmentId');
+            localStorage.removeItem('role');
             if (!response.ok) {
                 throw new Error('Failed to submit answers');
             }
@@ -81,8 +82,10 @@ const Question = () => {
         e.preventDefault();
         setError('');
         try {
-            
+                 localStorage.removeItem('assignmentId');
+            localStorage.removeItem('role');
             navigate('/showassignment');
+       
         } catch (error) {
             setError("Could not navigate back");
         }

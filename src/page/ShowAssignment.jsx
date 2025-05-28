@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../ShowAssignment.css";
-
+import React from "react";
 import { useNavigate } from 'react-router-dom';
 
 
@@ -324,6 +324,7 @@ useEffect(() => {
           )}
         </div>
       )}
+
 
       {showPendingAssignments && (
         <div className="child-assignments">
