@@ -37,10 +37,9 @@ BuddyBot is an educational platform designed to make learning fun and interactiv
     npm install
     ```
 
-3. Create a `.env` file in the `backend` directory with the following variables:
+3. Edit  `.env` file in the `backend` directory with the following variables:
     ```
-    MONGODB_URI=your_mongodb_connection_string
-    PORT=5000
+    Add API_KEY
     API_KEY=your_google_genai_api_key
     ```
 
