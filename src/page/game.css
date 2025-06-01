@@ -2,14 +2,36 @@
   padding: 20px;
   max-width: 600px;
   margin: auto;
+  text-align: center;
+  font-family: sans-serif;
+  background-color: #f4f4f4;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 button {
   display: block;
-  margin: 10px 0;
-  padding: 10px;
+  margin: 10px auto;
+  padding: 12px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.03);
 }
 
 .selected {
-  background-color: #ddd;
+  background-color: #ffc107;
+  color: black;
+}
+
+.subject-select h2 {
+  margin-bottom: 20px;
 }
