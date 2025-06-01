@@ -19,6 +19,7 @@ import GradingAssignment from './page/GradingAssignment';
 import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
 import ErrorBoundary from './ErrorBoundary';
+import SubjectSelect from './page/SubjectSelect';
 
 function App() {
 
@@ -40,12 +41,14 @@ function App() {
         <Route path="/ShowAssignment" element={<ShowAssignment />} />
         <Route path="/Question/:assignmentId" element={<Question />} />
         <Route path="/assignment" element={<Assignment />} />
-        <Route path="/game" element={<Game />} />
+        
         <Route path="/lesson" element={<Lesson />} />
         <Route path="/timetable" element={<TimeTable />} />
         <Route path="/lesson/:subjectName" element={<SubjectDetail />} />
         <Route path="/grading" element={<GradingAssignment />} />
-
+        <Route path="/game" element={<SubjectSelect />} />
+        <Route path="/game/:subject" element={<Game />} />
+ 
       </Routes>
 </ErrorBoundary>
       <Footer />
