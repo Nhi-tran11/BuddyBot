@@ -14,13 +14,27 @@ const Navbar = () => {
     if (location.state && location.state.user) {
       setIsLoggedIn(true);
       localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("loginTimestamp", Date.now().toString());
     }
   }, [location.state]);
+
+  useEffect(() => {
+    // Check if login expired (2 hours = 7200000 ms)
+    const loginTimestamp = localStorage.getItem("loginTimestamp");
+    if (isLoggedIn && loginTimestamp) {
+      const now = Date.now();
+      if (now - parseInt(loginTimestamp, 10) > 7200000) {
+        setIsLoggedIn(false);
+        localStorage.setItem("isLoggedIn", "false");
+        localStorage.removeItem("loginTimestamp");
+      }
+    }
+  }, [isLoggedIn]);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.setItem("isLoggedIn", "false");
-    // Optionally clear user data from location.state if needed
+    localStorage.removeItem("loginTimestamp");
     if (location.state) {
       location.state.user = null;
     }
