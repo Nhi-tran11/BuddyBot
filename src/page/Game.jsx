@@ -11,6 +11,8 @@ const Game = () => {
   const [feedback, setFeedback] = useState("");
   const [selected, setSelected] = useState(null);
   const [score, setScore] = useState(0);
+  const [playerName, setPlayerName] = useState("");
+  const [nameEntered, setNameEntered] = useState(false);
 
   useEffect(() => {
     if (subject) {
@@ -52,16 +54,36 @@ const Game = () => {
   if (view === "instructions") {
     return (
       <div className="game-container">
-        <h2>📚 Welcome to the {subject.charAt(0).toUpperCase() + subject.slice(1)} Quiz!</h2>
-        <ul style={{ textAlign: "left", lineHeight: "1.8" }}>
-          <li>This quiz contains 10 multiple choice questions.</li>
-          <li>Each question has four options: (a), (b), (c), and (d).</li>
-          <li>Click on the answer you think is correct.</li>
-          <li>You will receive instant feedback after answering.</li>
-          <li>Try your best to answer all questions correctly!</li>
-          <li>You will see your final score at the end.</li>
-        </ul>
-        <button onClick={() => setView("quiz")}>Start Quiz</button>
+        {!nameEntered ? (
+          <>
+            <h2>👋 Welcome! Enter your name to begin:</h2>
+            <input
+              type="text"
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              placeholder="Your name..."
+              style={{ padding: "10px", marginBottom: "10px" }}
+            />
+            <button onClick={() => {
+              if (playerName.trim() !== "") setNameEntered(true);
+            }}>
+              Continue
+            </button>
+          </>
+        ) : (
+          <>
+            <h2>📚 Hello {playerName}! Welcome to the {subject.charAt(0).toUpperCase() + subject.slice(1)} Quiz!</h2>
+            <ul style={{ textAlign: "left", lineHeight: "1.8" }}>
+              <li>This quiz contains 10 multiple choice questions.</li>
+              <li>Each question has four options: (a), (b), (c), and (d).</li>
+              <li>Click on the answer you think is correct.</li>
+              <li>You will receive instant feedback after answering.</li>
+              <li>Try your best to answer all questions correctly!</li>
+              <li>You will see your final score at the end.</li>
+            </ul>
+            <button onClick={() => setView("quiz")}>Start Quiz</button>
+          </>
+        )}
       </div>
     );
   }
@@ -70,14 +92,16 @@ const Game = () => {
     return (
       <div className="game-container">
         <h2>🎉 Quiz Complete!</h2>
-        <p>You scored <strong>{score}</strong> out of <strong>{questions.length}</strong>!</p>
-        <p>Great job! Keep practicing to improve even more. 🚀</p>
+        <p>{playerName}, you scored <strong>{score}</strong> out of <strong>{questions.length}</strong>!</p>
+        <p>Congrats, {playerName}! 🎉 Keep practicing to improve even more. 🚀</p>
         <button onClick={() => {
           setView("instructions");
           setCurrent(0);
           setScore(0);
           setSelected(null);
           setFeedback("");
+          setNameEntered(false);
+          setPlayerName("");
         }}>
           Play Again
         </button>
