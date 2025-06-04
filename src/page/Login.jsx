@@ -6,7 +6,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 
-function Login () {
+function Login() {
     const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
@@ -25,22 +25,22 @@ function Login () {
                 credentials: 'include', // Include credentials in the request
                 body: JSON.stringify({ username, password })
             });
-            
+
             const data = await response.json();
-            
+
             if (!response.ok) {
                 throw new Error(data.message || 'Login failed');
             }
-            
+
             console.log(data);
             if (data.message === 'Login successful') {
 
                 localStorage.setItem('user', data.user);
-                
+
                 navigate('/', { state: { user: data.user } });
 
             }
-        }  
+        }
         catch (err) {
             console.log(err);
             setError(err.message || 'An error occurred during LogIn');
@@ -51,7 +51,7 @@ function Login () {
         <div className="login-container">
             <form className="login-form" onSubmit={handleSubmit}>
                 <h3>Login</h3>
-                
+
                 <div className="form-group">
                     <label>UserName:</label>
                     <input
@@ -74,15 +74,15 @@ function Login () {
                     />
                 </div>
 
-                <button 
-                    type="submit" 
+                <button
+                    type="submit"
                     className="login-button"
 
                 >LogIn
                 </button>
                 {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-                 <p>Haven't had an account yet</p>
-                      <Link to="/SignUp" className='btn-primary'>SignUp</Link>
+                <p>Haven't had an account yet</p>
+                <Link to="/SignUp" className='btn-primary'>SignUp</Link>
             </form>
         </div>
     );

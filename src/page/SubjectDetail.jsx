@@ -97,18 +97,18 @@ export default function SubjectDetail() {
       intro: "Welcome to PE lessons! Stay active and learn about fitness, teamwork, and fun sports activities.",
       lessons: [
         { name: "Warm-Up & Stretching", link: "https://www.youtube.com/watch?v=388Q44ReOWE" },
-    { name: "Ball Games", link: "https://youtu.be/3MPoIsZFBMQ?si=PRlEj7ZNrfOwU8ig" }, 
-    { name: "Balance & Coordination", link: "https://youtu.be/xmfcBFcOwi0?si=H_YqSDODBM3CGAEb" }, 
-    { name: "Simple Exercises", link: "https://www.youtube.com/watch?v=L_A_HjHZxfI" } 
-  ]
+        { name: "Ball Games", link: "https://youtu.be/3MPoIsZFBMQ?si=PRlEj7ZNrfOwU8ig" },
+        { name: "Balance & Coordination", link: "https://youtu.be/xmfcBFcOwi0?si=H_YqSDODBM3CGAEb" },
+        { name: "Simple Exercises", link: "https://www.youtube.com/watch?v=L_A_HjHZxfI" }
+      ]
     },
     Music: {
       intro: "Welcome to Music lessons! Discover instruments, rhythms, and the joy of making music.",
       lessons: [
-        { name: "Singing Basics", link: "https://youtu.be/RaXlNvLHSIc?si=zax6mxIWVX9ntjyC" }, 
-        { name: "Rhythm & Beats", link: "https://youtu.be/HsZzcDjf_js?si=9wLgfC3ee6ANM9xh" }, 
-        { name: "Musical Instruments", link: "https://youtu.be/0A6XwFWD-z0?si=g7TNGvyuF4U88p5B" }, 
-        { name: "Famous Composers", link: "https://youtu.be/TXDiYZnjFmE?si=3k8nK76HLrGHCrf0" } 
+        { name: "Singing Basics", link: "https://youtu.be/RaXlNvLHSIc?si=zax6mxIWVX9ntjyC" },
+        { name: "Rhythm & Beats", link: "https://youtu.be/HsZzcDjf_js?si=9wLgfC3ee6ANM9xh" },
+        { name: "Musical Instruments", link: "https://youtu.be/0A6XwFWD-z0?si=g7TNGvyuF4U88p5B" },
+        { name: "Famous Composers", link: "https://youtu.be/TXDiYZnjFmE?si=3k8nK76HLrGHCrf0" }
       ]
     }
   };

@@ -1,12 +1,14 @@
 .App {
   text-align: center;
 }
-body{
+
+body {
   font-family: Verdana, sans-serif;
   font-size: 16px;
   max-height: 100%;
 }
-.welcomesection{
+
+.welcomesection {
   background-color: #7e64ab;
   color: #ffffff;
   padding: 40px;
@@ -14,6 +16,7 @@ body{
   max-width: 100%;
   max-height: 30%;
 }
+
 .welcome-container {
   position: relative;
   text-align: center;
@@ -30,19 +33,19 @@ body{
 
 .title {
   position: absolute;
-  height:126%;
+  height: 126%;
   left: 50%;
   transform: translate(-50%, -50%);
   color: rgb(228, 236, 117);
   font-size: 280%;
-  font-style: italic ;
+  font-style: italic;
   font-weight: bold;
-  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .welcomesection img {
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   /* pointer-events: none; */
 }
 
@@ -51,12 +54,13 @@ body{
     animation: App-logo-spin infinite 20s linear;
   }
 }
-  /* On smaller screens, decrease text size */
-  @media only screen and (max-width: 300px) {
-    .text {
-      font-size: 11px;
-    }
+
+/* On smaller screens, decrease text size */
+@media only screen and (max-width: 300px) {
+  .text {
+    font-size: 11px;
   }
+}
 
 .App-header {
   background-color: #282c34;
@@ -77,6 +81,7 @@ body{
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
