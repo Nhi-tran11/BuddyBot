@@ -2,10 +2,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 import { getAllLessons } from "../utils/lessonsStore";
-import "../css/Lesson.css";
+
 
 // If you’re using a Context or prop for role, import that:
-import { UserRoleContext } from "../App"; // example; adjust if needed
+
 
 export default function SubjectOverview() {
   const { subjectSlug } = useParams(); 
@@ -35,18 +35,15 @@ export default function SubjectOverview() {
         {subjectName} Lessons
       </h1>
 
-      {/* ─── “Create New Lesson” Button (Parent Only) ─── */}
-      {role === "parent" && (
-        <div style={{ marginBottom: "1rem", textAlign: "right" }}>
-          <Link
-            to={`/subject/${subjectSlug}/create-lesson`}
-            className="btn-green"
-            style={{ padding: "0.5rem 1rem", textDecoration: "none" }}
-          >
-            + Create Lesson in {subjectName}
-          </Link>
-        </div>
-      )}
+      <div style={{ marginBottom: "1rem", textAlign: "right" }}>
+  <Link
+    to={`/subject/${subjectSlug}/create-lesson`}
+    className="btn-green"
+    style={{ padding: "0.5rem 1rem", textDecoration: "none" }}
+  >
+    + Create Lesson in {subjectName}
+  </Link>
+</div>
 
       {/* List of Existing Lessons */}
       <div className="subject-list">

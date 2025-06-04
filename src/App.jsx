@@ -20,6 +20,8 @@ import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
 import ErrorBoundary from './ErrorBoundary';
 import SubjectSelect from './page/SubjectSelect';
+import SubjectOverview from "./page/SubjectOverview";
+import CreateLesson from "./page/CreateLesson"; // or adjust path if needed
 
 function App() {
 
@@ -41,7 +43,8 @@ function App() {
         <Route path="/ShowAssignment" element={<ShowAssignment />} />
         <Route path="/Question/:assignmentId" element={<Question />} />
         <Route path="/assignment" element={<Assignment />} />
-        
+        <Route path="/lessons/create" element={<CreateLesson />} />
+<Route path="/subject/:subjectSlug/create-lesson" element={<CreateLesson />} />
         <Route path="/lesson" element={<Lesson />} />
         <Route path="/timetable" element={<TimeTable />} />
         <Route path="/lesson/:subjectName" element={<SubjectDetail />} />

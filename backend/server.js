@@ -20,6 +20,9 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use('/api/quiz', quizRoutes);
+const lessonRoutes = require('./routes/lessonRoutes'); // ✅ New
+app.use('/api/lessons', lessonRoutes);                 // ✅ New
+
 app.use(session({
     secret: 'your_secret_key',
     resave: true,
@@ -27,6 +30,7 @@ app.use(session({
     cookie: {
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
+    
 }));
 
 // MongoDB connection

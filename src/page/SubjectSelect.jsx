@@ -24,5 +24,21 @@ const SubjectSelect = () => {
     </div>
   );
 };
+<button
+  onClick={() => navigate('/lessons/create')}
+  style={{
+    padding: '10px 20px',
+    marginBottom: '20px',
+    backgroundColor: '#28a745',
+    color: 'white',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    fontWeight: 'bold'
+  }}
+>
+  ➕ Create Lesson
+</button>
+
 
 export default SubjectSelect;
