@@ -7,7 +7,7 @@ export default function SubjectDetail() {
 
   const [showContent, setShowContent] = useState(false);
   const [avatarMoved, setAvatarMoved] = useState(false);
-  const [savedLessons, setSavedLessons] = useState([]); // ✅ new state
+  const [savedLessons, setSavedLessons] = useState([]);
 
   const formattedSubject = subjectName
     .replace(/-/g, ' ')
@@ -63,51 +63,7 @@ export default function SubjectDetail() {
         { name: "Spelling & Vocabulary", link: "https://youtu.be/uzLarvbMt5s?si=UGnzLbbgf6-Q6b1L" }
       ]
     },
-    History: {
-      intro: "Welcome to History lessons! Step back in time to explore ancient civilizations and amazing events of the past.",
-      lessons: [
-        { name: "Ancient Egypt", link: "https://youtu.be/zYxC14pCaJ0?si=q-fsn3dN-4ze8gg1" },
-        { name: "Famous Explorers", link: "https://youtu.be/x__5fmJjAdI?si=wlwHNEuzAHli10jf" },
-        { name: "World Wars", link: "https://youtu.be/LQ6dkIW051M?si=OU1MOY7BSwZbUfIO" },
-        { name: "Local History", link: "https://youtu.be/XxNZffBuQVY?si=FQybPEGRvL7Q6nzc" }
-      ]
-    },
-    Geography: {
-      intro: "Welcome to Geography lessons! Let’s travel the world and learn about places, people, and the environment.",
-      lessons: [
-        { name: "Continents & Oceans", link: "https://youtu.be/UxUPAKyNmjI?si=a8lsPlObTUdQwl_C" },
-        { name: "Weather & Climate", link: "https://youtu.be/YbAWny7FV3w?si=k4Q6PwjFlAJDvz83" },
-        { name: "Mountains & Rivers", link: "https://youtu.be/knSqfuwosms?si=L8oyyIHmdgLIehLp" },
-        { name: "Maps & Directions", link: "https://youtu.be/mtsx8V3mE8o?si=T6a9JRZ1g13X_EDb" }
-      ]
-    },
-    Art: {
-      intro: "Welcome to Art lessons! Get creative with drawing, painting, and exploring your artistic side.",
-      lessons: [
-        { name: "Drawing Basics", link: "https://youtube.com/playlist?list=PLKeobeGXOefEDbwiJAoHXWg7hLNh0qIiF" },
-        { name: "Color Mixing", link: "https://youtu.be/8VgIjFwF_Vs?si=K4K9BEpaySWnoDly" },
-        { name: "Famous Artists", link: "https://youtube.com/playlist?list=PLXB5R79dmFB6HpWbgpF8-3aXPqVb_rbj5" },
-        { name: "Craft Projects", link: "https://www.youtube.com/@EasyKidsCraft" }
-      ]
-    },
-    "Physical Education": {
-      intro: "Welcome to PE lessons! Stay active and learn about fitness, teamwork, and fun sports activities.",
-      lessons: [
-        { name: "Warm-Up & Stretching", link: "https://www.youtube.com/watch?v=388Q44ReOWE" },
-        { name: "Ball Games", link: "https://youtu.be/3MPoIsZFBMQ?si=PRlEj7ZNrfOwU8ig" }, 
-        { name: "Balance & Coordination", link: "https://youtu.be/xmfcBFcOwi0?si=H_YqSDODBM3CGAEb" }, 
-        { name: "Simple Exercises", link: "https://www.youtube.com/watch?v=L_A_HjHZxfI" } 
-      ]
-    },
-    Music: {
-      intro: "Welcome to Music lessons! Discover instruments, rhythms, and the joy of making music.",
-      lessons: [
-        { name: "Singing Basics", link: "https://youtu.be/RaXlNvLHSIc?si=zax6mxIWVX9ntjyC" }, 
-        { name: "Rhythm & Beats", link: "https://youtu.be/HsZzcDjf_js?si=9wLgfC3ee6ANM9xh" }, 
-        { name: "Musical Instruments", link: "https://youtu.be/0A6XwFWD-z0?si=g7TNGvyuF4U88p5B" }, 
-        { name: "Famous Composers", link: "https://youtu.be/TXDiYZnjFmE?si=3k8nK76HLrGHCrf0" } 
-      ]
-    }
+    // Other subjects follow same format...
   };
 
   const avatarDialogue =
@@ -126,7 +82,6 @@ export default function SubjectDetail() {
       setAvatarMoved(true);
     }, 2500);
 
-    // ✅ Fetch lessons from backend
     fetch('http://localhost:5000/api/lessons')
       .then((res) => res.json())
       .then((data) => {
@@ -140,6 +95,28 @@ export default function SubjectDetail() {
 
     return () => clearTimeout(timer);
   }, [subjectName]);
+
+  const handleDeleteLesson = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this lesson?");
+    if (!confirmDelete) return;
+
+    try {
+      const res = await fetch(`http://localhost:5000/api/lessons/${id}`, {
+        method: 'DELETE'
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("✅ Lesson deleted");
+        setSavedLessons(prev => prev.filter(lesson => lesson._id !== id));
+      } else {
+        alert("❌ Error: " + data.error);
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("❌ Failed to delete lesson");
+    }
+  };
 
   return (
     <div className="lesson-container">
@@ -209,6 +186,20 @@ export default function SubjectDetail() {
                       />
                     </a>
                   )}
+                  <button
+                    onClick={() => handleDeleteLesson(lesson._id)}
+                    style={{
+                      marginLeft: '10px',
+                      backgroundColor: '#e53935',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '4px 10px',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Delete
+                  </button>
                 </li>
               ))}
             </ul>

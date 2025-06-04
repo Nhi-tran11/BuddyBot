@@ -12,5 +12,17 @@ router.get('/', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch lessons' });
   }
 });
+router.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await Lesson.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ error: 'Lesson not found' });
+    }
+    res.status(200).json({ message: 'Lesson deleted' });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to delete lesson' });
+  }
+});
+
 
 module.exports = router;
