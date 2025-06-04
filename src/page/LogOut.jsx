@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 function LogOut() {
   const navigate = useNavigate();
   const [isLoggedOut, setIsLoggedOut] = useState(false);
-  
+
   React.useEffect(() => {
     const performLogout = async () => {
       try {
@@ -14,18 +14,18 @@ function LogOut() {
           method: 'GET',
           credentials: 'include', // Include credentials in the request
         });
-        
-        if(!response.ok) {
+
+        if (!response.ok) {
           throw new Error('Logout failed');
         }
-        
+
         const data = await response.json();
         console.log(data);
         if (data.message === 'Logged out successfully') {
           // Clear any user data from local storage or state
           localStorage.removeItem('user');
           console.log('Cleared user for testing');
-   
+
           setIsLoggedOut(true);
           navigate('/login');
           localStorage.removeItem('role'); // Clear role from local storage
@@ -34,10 +34,10 @@ function LogOut() {
         console.log('Non-JSON response or parsing error:', error);
       }
     };
-    
+
     performLogout();
   }, [navigate]); // Add navigate as a dependency
-  
+
   return (
     <div className="logout-container">
       <p> You successfully loged Out</p>

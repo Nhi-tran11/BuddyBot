@@ -31,26 +31,26 @@ function App() {
 
       <Navbar />
       <ErrorBoundary>
-      <Routes>
-        <Route path="/" element={<Home />} />
-      
-        <Route path="/logout" element={<LogOut/>} />
-        <Route path="/login" element={<Login/> }/>
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/signupChild" element={<SignUpChild />} />
-        <Route path="/ShowAssignment" element={<ShowAssignment />} />
-        <Route path="/Question/:assignmentId" element={<Question />} />
-        <Route path="/assignment" element={<Assignment />} />
-        
-        <Route path="/lesson" element={<Lesson />} />
-        <Route path="/timetable" element={<TimeTable />} />
-        <Route path="/lesson/:subjectName" element={<SubjectDetail />} />
-        <Route path="/grading" element={<GradingAssignment />} />
-        <Route path="/game" element={<SubjectSelect />} />
-        <Route path="/game/:subject" element={<Game />} />
- 
-      </Routes>
-</ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<Home />} />
+
+          <Route path="/logout" element={<LogOut />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/signupChild" element={<SignUpChild />} />
+          <Route path="/ShowAssignment" element={<ShowAssignment />} />
+          <Route path="/Question/:assignmentId" element={<Question />} />
+          <Route path="/assignment" element={<Assignment />} />
+
+          <Route path="/lesson" element={<Lesson />} />
+          <Route path="/timetable" element={<TimeTable />} />
+          <Route path="/lesson/:subjectName" element={<SubjectDetail />} />
+          <Route path="/grading" element={<GradingAssignment />} />
+          <Route path="/game" element={<SubjectSelect />} />
+          <Route path="/game/:subject" element={<Game />} />
+
+        </Routes>
+      </ErrorBoundary>
       <Footer />
     </div>
   );

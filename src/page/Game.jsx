@@ -32,14 +32,14 @@ const Game = () => {
         score,
         total: questions.length
       })
-      .then(() => {
-        console.log("✅ Score saved");
-        setScoreSaved(true);
-      })
-      .catch(err => {
-        console.error("❌ Failed to save score:", err);
-        setScoreSaved(false);
-      });
+        .then(() => {
+          console.log("✅ Score saved");
+          setScoreSaved(true);
+        })
+        .catch(err => {
+          console.error("❌ Failed to save score:", err);
+          setScoreSaved(false);
+        });
     }
   }, [view]);
 

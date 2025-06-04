@@ -1,10 +1,11 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
-body{
-  font-family: Verdana, sans-serif;
-  font-size: 16px;
-  max-height: 100%;
+
+body {
+    font-family: Verdana, sans-serif;
+    font-size: 16px;
+    max-height: 100%;
 }
 
 .ai-assignment-form {
@@ -46,7 +47,7 @@ body{
 .ai-assignment-form button:hover {
     background-color: #45a049;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .ai-assignment-form button:active {
@@ -59,7 +60,7 @@ body{
     padding: 2rem;
     border-radius: 8px;
     margin-bottom: 2rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     border-left: 4px solid #4CAF50;
 }
 
@@ -86,7 +87,7 @@ body{
     color: #555;
 }
 
-.ai-form select, 
+.ai-form select,
 .ai-form input[type="date"] {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -140,7 +141,7 @@ body{
     background: white;
     border-radius: 8px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
     border: 1px solid #eee;
     position: relative;
@@ -149,7 +150,7 @@ body{
 
 .task-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 .task-card.ai-generated {
@@ -300,7 +301,9 @@ body{
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 .empty-state {
@@ -333,15 +336,15 @@ body{
         gap: 1rem;
         align-items: flex-start;
     }
-    
+
     .tasks-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .ai-form-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .assignment-container {
         padding: 1rem;
     }
