@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
 const Game = () => {
-  const { subject } = useParams(); // e.g. "math", "science"
+  const { subject } = useParams();
   const [view, setView] = useState("instructions");
   const [questions, setQuestions] = useState([]);
   const [current, setCurrent] = useState(0);
@@ -13,6 +13,7 @@ const Game = () => {
   const [score, setScore] = useState(0);
   const [playerName, setPlayerName] = useState("");
   const [nameEntered, setNameEntered] = useState(false);
+  const [scoreSaved, setScoreSaved] = useState(false);
 
   useEffect(() => {
     if (subject) {
@@ -23,6 +24,24 @@ const Game = () => {
         .catch(err => console.error(err));
     }
   }, [subject]);
+
+  useEffect(() => {
+    if (view === "done") {
+      axios.post('http://localhost:5000/api/scores', {
+        playerName,
+        score,
+        total: questions.length
+      })
+      .then(() => {
+        console.log("✅ Score saved");
+        setScoreSaved(true);
+      })
+      .catch(err => {
+        console.error("❌ Failed to save score:", err);
+        setScoreSaved(false);
+      });
+    }
+  }, [view]);
 
   const handleAnswer = (index) => {
     const isCorrect = index === questions[current].correctAnswer;
@@ -78,7 +97,6 @@ const Game = () => {
               <li>Each question has four options: (a), (b), (c), and (d).</li>
               <li>Click on the answer you think is correct.</li>
               <li>You will receive instant feedback after answering.</li>
-              <li>Try your best to answer all questions correctly!</li>
               <li>You will see your final score at the end.</li>
             </ul>
             <button onClick={() => setView("quiz")}>Start Quiz</button>
@@ -94,6 +112,7 @@ const Game = () => {
         <h2>🎉 Quiz Complete!</h2>
         <p>{playerName}, you scored <strong>{score}</strong> out of <strong>{questions.length}</strong>!</p>
         <p>Congrats, {playerName}! 🎉 Keep practicing to improve even more. 🚀</p>
+        {scoreSaved && <p style={{ color: 'green' }}>✅ Score saved!</p>}
         <button onClick={() => {
           setView("instructions");
           setCurrent(0);
@@ -102,6 +121,7 @@ const Game = () => {
           setFeedback("");
           setNameEntered(false);
           setPlayerName("");
+          setScoreSaved(false);
         }}>
           Play Again
         </button>
@@ -136,3 +156,4 @@ const Game = () => {
 };
 
 export default Game;
+
