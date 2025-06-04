@@ -18,11 +18,30 @@ const CreateLesson = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Created Lesson:", formData); // replace with API call later
-    alert("Lesson created successfully!");
-    navigate('/lesson'); // redirect after submit
+
+    try {
+      const res = await fetch('http://localhost:5000/api/lessons', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("✅ Lesson saved to backend!");
+        navigate('/lesson');
+      } else {
+        alert("❌ Error: " + data.error);
+      }
+    } catch (err) {
+      alert("❌ Server error");
+      console.error(err);
+    }
   };
 
   return (
@@ -93,4 +112,3 @@ const CreateLesson = () => {
 };
 
 export default CreateLesson;
-

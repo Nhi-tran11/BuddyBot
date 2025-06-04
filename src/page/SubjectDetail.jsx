@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import './Lesson.css';  // ✅ Using same CSS
+import './Lesson.css';
 
 export default function SubjectDetail() {
   const { subjectName } = useParams();
 
   const [showContent, setShowContent] = useState(false);
   const [avatarMoved, setAvatarMoved] = useState(false);
+  const [savedLessons, setSavedLessons] = useState([]); // ✅ new state
 
-  // Format subject name
   const formattedSubject = subjectName
     .replace(/-/g, ' ')
     .replace(/\b\w/g, (c) => c.toUpperCase());
 
-  // Dialogues per subject
   const dialogues = {
     mathematics: "Awesome pick! 🧮 Let’s crunch some numbers and become math wizards together!",
     science: "Whoa, Science! 🧪 Get ready to explore the mysteries of the universe with me 🚀.",
@@ -25,7 +24,6 @@ export default function SubjectDetail() {
     music: "Fantastic! 🎵 Let’s jam, sing, and explore the magical world of music together!"
   };
 
-  // Subject icons
   const subjectIcons = {
     mathematics: '/math.png',
     science: '/science.png',
@@ -37,7 +35,6 @@ export default function SubjectDetail() {
     music: '/music.png'
   };
 
-  // Subject data: intro + lessons + YouTube links
   const subjectsData = {
     Mathematics: {
       intro: "Welcome to Mathematics lessons! Here you'll explore exciting topics like numbers, formulas, and fun activities.",
@@ -87,20 +84,20 @@ export default function SubjectDetail() {
     Art: {
       intro: "Welcome to Art lessons! Get creative with drawing, painting, and exploring your artistic side.",
       lessons: [
-        { name: "Drawing Basics", link: "https://youtube.com/playlist?list=PLKeobeGXOefEDbwiJAoHXWg7hLNh0qIiF&si=2F8dvN7ESi8GVEga" },
+        { name: "Drawing Basics", link: "https://youtube.com/playlist?list=PLKeobeGXOefEDbwiJAoHXWg7hLNh0qIiF" },
         { name: "Color Mixing", link: "https://youtu.be/8VgIjFwF_Vs?si=K4K9BEpaySWnoDly" },
-        { name: "Famous Artists", link: "https://youtube.com/playlist?list=PLXB5R79dmFB6HpWbgpF8-3aXPqVb_rbj5&si=9SfkK0Y5LBseuR1c" },
-        { name: "Craft Projects", link: "www.youtube.com/@EasyKidsCraft" }
+        { name: "Famous Artists", link: "https://youtube.com/playlist?list=PLXB5R79dmFB6HpWbgpF8-3aXPqVb_rbj5" },
+        { name: "Craft Projects", link: "https://www.youtube.com/@EasyKidsCraft" }
       ]
     },
     "Physical Education": {
       intro: "Welcome to PE lessons! Stay active and learn about fitness, teamwork, and fun sports activities.",
       lessons: [
         { name: "Warm-Up & Stretching", link: "https://www.youtube.com/watch?v=388Q44ReOWE" },
-    { name: "Ball Games", link: "https://youtu.be/3MPoIsZFBMQ?si=PRlEj7ZNrfOwU8ig" }, 
-    { name: "Balance & Coordination", link: "https://youtu.be/xmfcBFcOwi0?si=H_YqSDODBM3CGAEb" }, 
-    { name: "Simple Exercises", link: "https://www.youtube.com/watch?v=L_A_HjHZxfI" } 
-  ]
+        { name: "Ball Games", link: "https://youtu.be/3MPoIsZFBMQ?si=PRlEj7ZNrfOwU8ig" }, 
+        { name: "Balance & Coordination", link: "https://youtu.be/xmfcBFcOwi0?si=H_YqSDODBM3CGAEb" }, 
+        { name: "Simple Exercises", link: "https://www.youtube.com/watch?v=L_A_HjHZxfI" } 
+      ]
     },
     Music: {
       intro: "Welcome to Music lessons! Discover instruments, rhythms, and the joy of making music.",
@@ -129,18 +126,28 @@ export default function SubjectDetail() {
       setAvatarMoved(true);
     }, 2500);
 
+    // ✅ Fetch lessons from backend
+    fetch('http://localhost:5000/api/lessons')
+      .then((res) => res.json())
+      .then((data) => {
+        const filtered = data.lessons.filter(
+          (lesson) =>
+            lesson.subject.toLowerCase().replace(/\s+/g, '-') === subjectName.toLowerCase()
+        );
+        setSavedLessons(filtered);
+      })
+      .catch((err) => console.error('Error fetching saved lessons:', err));
+
     return () => clearTimeout(timer);
   }, [subjectName]);
 
   return (
     <div className="lesson-container">
-      {/* Avatar greeting */}
       <div className={`lesson-avatar ${avatarMoved ? 'moved' : 'centered'}`}>
         <img src="/avatar-bot.png" alt="Buddy Bot" />
         {!avatarMoved && <p>{avatarDialogue}</p>}
       </div>
 
-      {/* Main content after greeting */}
       {showContent && (
         <div className="subjects-section fade-in">
           {subjectIcon && (
@@ -165,6 +172,32 @@ export default function SubjectDetail() {
                   {lesson.link && (
                     <a
                       href={lesson.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="lesson-link"
+                    >
+                      <img
+                        src="/youtube-icon.png"
+                        alt="Watch on YouTube"
+                        className="youtube-icon"
+                      />
+                    </a>
+                  )}
+                </li>
+              ))}
+
+              {savedLessons.map((lesson, index) => (
+                <li
+                  key={`saved-${index}`}
+                  style={{
+                    animationDelay: `${0.2 * (index + subjectContent.lessons.length + 1)}s`
+                  }}
+                  className="fade-in-up lesson-item"
+                >
+                  {lesson.title}
+                  {lesson.youtubeUrl && (
+                    <a
+                      href={lesson.youtubeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="lesson-link"

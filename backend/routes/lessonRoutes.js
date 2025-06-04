@@ -1,12 +1,16 @@
-// routes/lessonRoutes.js
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const {
-  createLesson,
-  getLessonsBySubject,
-} = require("../controllers/lessonController");
+const Lesson = require('../model/lesson'); // ✅ your Lesson model
 
-router.post("/", createLesson);
-router.get("/", getLessonsBySubject);
+// ✅ GET all lessons
+router.get('/', async (req, res) => {
+  try {
+    const lessons = await Lesson.find().sort({ _id: -1 });
+    res.status(200).json({ lessons });
+  } catch (err) {
+    console.error('Failed to fetch lessons:', err);
+    res.status(500).json({ error: 'Failed to fetch lessons' });
+  }
+});
 
 module.exports = router;
