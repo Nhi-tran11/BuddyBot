@@ -94,3 +94,31 @@ ul li button {
 ul li button:hover {
   background-color: #e0a800;
 }
+
+.error-msg {
+  margin-top: 10px;
+  color: white;
+  background-color: #e53935;
+  padding: 10px 15px;
+  border-radius: 6px;
+  display: inline-block;
+  font-weight: bold;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0px); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0px); }
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

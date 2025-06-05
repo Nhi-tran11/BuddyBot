@@ -5,6 +5,8 @@ import './timetable.css';
 const Timetable = () => {
   const [timetable, setTimetable] = useState([]);
   const [newEntry, setNewEntry] = useState({ day: '', time: '', subject: '' });
+  const [errorMsg, setErrorMsg] = useState('');
+  const [shake, setShake] = useState(false);
 
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const times = ["09:00 AM", "10:00 AM", "11:00 AM", "12:00 PM", "01:00 PM", "02:00 PM"];
@@ -21,27 +23,36 @@ const Timetable = () => {
   const handleAdd = () => {
     const { day, time, subject } = newEntry;
 
-  if (!day || !time || !subject) {
-    alert("Please fill all fields.");
-    return;
-  }
+    if (!day || !time || !subject) {
+      setErrorMsg("❗ Please fill all fields.");
+      setShake(true);
+      setTimeout(() => {
+        setErrorMsg('');
+        setShake(false);
+      }, 2000);
+      return;
+    }
 
-  //  Check if a slot with same day & time already exists
-  const slotTaken = timetable.find(entry => entry.day === day && entry.time === time);
+    const slotTaken = timetable.find(entry => entry.day === day && entry.time === time);
 
-  if (slotTaken) {
-    alert("❌ Slot already full! Choose a different time.");
-    return;
-  }
+    if (slotTaken) {
+      setErrorMsg("❌ Slot already full! Choose a different time.");
+      setShake(true);
+      setTimeout(() => {
+        setErrorMsg('');
+        setShake(false);
+      }, 2000);
+      return;
+    }
 
-  //  If valid, post to backend
-  axios.post('http://localhost:5000/api/timetable', { day, time, subject })
-    .then(res => {
-      setTimetable([...timetable, res.data]);
-      setNewEntry({ day: '', time: '', subject: '' });
-    })
-    .catch(err => console.error("Failed to add entry:", err));
-};
+    axios.post('http://localhost:5000/api/timetable', { day, time, subject })
+      .then(res => {
+        setTimetable([...timetable, res.data]);
+        setNewEntry({ day: '', time: '', subject: '' });
+      })
+      .catch(err => console.error("Failed to add entry:", err));
+  };
+
   // Delete entry
   const handleDelete = (id) => {
     axios.delete(`http://localhost:5000/api/timetable/${id}`)
@@ -72,10 +83,19 @@ const Timetable = () => {
           {subjects.map(subject => <option key={subject}>{subject}</option>)}
         </select>
 
-        <button onClick={handleAdd} style={{ marginLeft: '10px' }}>Add</button>
+        <div className="button-row">
+          <button onClick={handleAdd}>Add</button>
+        </div>
+
+        {/* Error message display */}
+        {errorMsg && (
+          <div className={`error-msg ${shake ? 'shake' : ''}`}>
+            {errorMsg}
+          </div>
+        )}
       </div>
 
-      {/* Raw list view (for reference/debug) */}
+      {/* Raw list view */}
       <ul>
         {timetable.map(entry => (
           <li key={entry._id}>
@@ -100,15 +120,12 @@ const Timetable = () => {
               <tr key={time}>
                 <td>{time}</td>
                 {days.map(day => {
-                  const entry = timetable.find(
-                    e => e.day === day && e.time === time
-                  );
+                  const entry = timetable.find(e => e.day === day && e.time === time);
                   return <td key={day + time}>{entry?.subject || ''}</td>;
-                  })}
-             </tr>
+                })}
+              </tr>
             ))}
-           </tbody>
-
+          </tbody>
         </table>
       </div>
     </div>
