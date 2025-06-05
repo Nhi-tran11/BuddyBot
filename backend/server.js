@@ -28,10 +28,12 @@ app.use('/api/lessons', lessonRoutes);                 // ✅ New
 
 app.use('/api/scores', require('./routes/scoreRoutes'));//scoreki
 
-app.use(cors({origin: '*',
-    methods: ['GET', 'POST', 'DELETE', 'PUT'], 
-   
-    credentials: true}))//tt
+app.use(cors({
+origin: ['*', 'http://localhost:5173'],
+credentials: true,
+methods: ['GET', 'POST', 'DELETE', 'PUT']
+}));//tt
+
 
 app.use(session({
     secret: 'your_secret_key',
