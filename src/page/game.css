@@ -74,6 +74,24 @@ body {
   margin-top: 15px;
 }
 
+.leaderboard-btn {
+  background-color: #64b5f6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-top: 15px;
+}
+
+.leaderboard-btn:hover {
+  transform: scale(1.05);
+  background-color: #42a5f5;
+}
+
 .choose-topic-btn:hover {
   transform: scale(1.05);
   background-color: #66bb6a;
@@ -128,4 +146,27 @@ ul {
   list-style-type: "🌟 ";
   text-align: left;
   padding-left: 20px;
+}
+
+.leaderboard-view {
+  background: linear-gradient(135deg, #e0f7fa 0%, #80deea 100%);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 700px;
+  margin: 40px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+}
+
+.leaderboard-view h2 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+  color: #00796b;
+}
+
+.leaderboard-view ol {
+  text-align: left;
+  padding-left: 40px;
+  font-size: 1.2rem;
+  color: #333;
 }

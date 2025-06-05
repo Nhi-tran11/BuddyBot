@@ -14,6 +14,7 @@ const Game = () => {
   const [playerName, setPlayerName] = useState("");
   const [nameEntered, setNameEntered] = useState(false);
   const [scoreSaved, setScoreSaved] = useState(false);
+  const [leaders, setLeaders] = useState([]); // Moved here
 
   useEffect(() => {
     if (subject) {
@@ -40,6 +41,14 @@ const Game = () => {
           console.error("❌ Failed to save score:", err);
           setScoreSaved(false);
         });
+    }
+  }, [view]);
+
+  useEffect(() => {
+    if (view === "leaderboard") {
+      axios.get('http://localhost:5000/api/scores/leaderboard')
+        .then(res => setLeaders(res.data))
+        .catch(err => console.error("Leaderboard fetch error:", err));
     }
   }, [view]);
 
@@ -85,19 +94,18 @@ const Game = () => {
             />
             <button onClick={() => {
               if (playerName.trim() !== "") setNameEntered(true);
-              }}>
-                Let's Go! 🚀
+            }}>
+              Let's Go! 🚀
             </button>
 
-<button
-  className="choose-topic-btn"
-  onClick={() => {
-    window.location.href = "/game";
-  }}
->
-  ❌ Nope, choose another topic
-</button>
-
+            <button
+              className="choose-topic-btn"
+              onClick={() => {
+                window.location.href = "/game";
+              }}
+            >
+              ❌ Nope, choose another topic
+            </button>
           </>
         ) : (
           <>
@@ -116,36 +124,65 @@ const Game = () => {
     );
   }
 
+  if (view === "leaderboard") {
+    return (
+      <div className="game-container">
+        <h2>🏆 Leaderboard</h2>
+        <ol>
+          {leaders.map((player, index) => (
+            <li key={index}>
+              {player.playerName} — {player.score} / {player.total}
+            </li>
+          ))}
+        </ol>
+        <button className="play-again-btn"
+           onClick={() => {
+           window.location.href = "/game";
+           }}
+          >
+          ⬅️ Back to Start
+         </button>
+      </div>
+    );
+  }
+
   if (view === "done") {
     return (
       <div className="done-view">
-      <h2>🏁 All done, {playerName}!</h2>
-      <p>You scored <strong>{score}</strong> out of <strong>{questions.length}</strong>! 🎉</p>
-      <p>🌟 Awesome job, {playerName}! You’re amazing! 🌟</p>
-      {scoreSaved && <p className="score-saved">✅ Score saved!</p>}
-      <button
-        className="play-again-btn"
-        onClick={() => {
-          setView("instructions");
-          setCurrent(0);
-          setScore(0);
-          setSelected(null);
-          setFeedback("");
-          setNameEntered(false);
-          setPlayerName("");
-          setScoreSaved(false);
-
-        }}>
+        <h2>🏁 All done, {playerName}!</h2>
+        <p>You scored <strong>{score}</strong> out of <strong>{questions.length}</strong>! 🎉</p>
+        <p>🌟 Awesome job, {playerName}! You’re amazing! 🌟</p>
+        {scoreSaved && <p className="score-saved">✅ Score saved!</p>}
+        <button
+          className="play-again-btn"
+          onClick={() => {
+            setView("instructions");
+            setCurrent(0);
+            setScore(0);
+            setSelected(null);
+            setFeedback("");
+            setNameEntered(false);
+            setPlayerName("");
+            setScoreSaved(false);
+          }}
+        >
           Play Again 🔄
         </button>
 
         <button
           className="choose-topic-btn"
           onClick={() => {
-                window.location.href = "/game";
-           }}
+            window.location.href = "/game";
+          }}
         >
-           🎯 Choose Another Topic
+          🎯 Choose Another Topic
+        </button>
+
+        <button
+          className="leaderboard-btn"
+          onClick={() => setView("leaderboard")}
+        >
+          🏆 View Leaderboard
         </button>
       </div>
     );
