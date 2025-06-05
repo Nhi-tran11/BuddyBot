@@ -49,9 +49,9 @@ const Game = () => {
 
     if (isCorrect) {
       setScore(score + 1);
-      setFeedback("✅ Great job!");
+      setFeedback("🎉 You got it right!");
     } else {
-      setFeedback(`❌ Oops! The correct answer was "${questions[current].options[questions[current].correctAnswer]}".`);
+      setFeedback(`😢 Oops! The correct answer was "${questions[current].options[questions[current].correctAnswer]}".`);
     }
 
     setTimeout(() => {
@@ -67,7 +67,7 @@ const Game = () => {
   };
 
   if (!subject) {
-    return <div className="game-container"><p>Subject not specified.</p></div>;
+    return <div className="game-container"><p>⚠️ Subject not specified.</p></div>;
   }
 
   if (view === "instructions") {
@@ -75,31 +75,41 @@ const Game = () => {
       <div className="game-container">
         {!nameEntered ? (
           <>
-            <h2>👋 Welcome! Enter your name to begin:</h2>
+            <h2>👋 WELCOME! What’s your player name?</h2>
             <input
               type="text"
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Your name..."
+              placeholder="Type your player name here..."
               style={{ padding: "10px", marginBottom: "10px" }}
             />
             <button onClick={() => {
               if (playerName.trim() !== "") setNameEntered(true);
-            }}>
-              Continue
+              }}>
+                Let's Go! 🚀
             </button>
+
+<button
+  className="choose-topic-btn"
+  onClick={() => {
+    window.location.href = "/game";
+  }}
+>
+  ❌ Nope, choose another topic
+</button>
+
           </>
         ) : (
           <>
-            <h2>📚 Hello {playerName}! Welcome to the {subject.charAt(0).toUpperCase() + subject.slice(1)} Quiz!</h2>
+            <h2>📚 Welcome {playerName}!</h2>
+            <p>Get ready for the <strong>{subject.charAt(0).toUpperCase() + subject.slice(1)}</strong> Quiz!</p>
             <ul style={{ textAlign: "left", lineHeight: "1.8" }}>
-              <li>This quiz contains 10 multiple choice questions.</li>
-              <li>Each question has four options: (a), (b), (c), and (d).</li>
-              <li>Click on the answer you think is correct.</li>
-              <li>You will receive instant feedback after answering.</li>
-              <li>You will see your final score at the end.</li>
+              <li>🎯 10 exciting questions await you.</li>
+              <li>🧠 Choose the best answer from 4 options.</li>
+              <li>💬 Instant feedback after each answer.</li>
+              <li>🌟 Score points and have fun!</li>
             </ul>
-            <button onClick={() => setView("quiz")}>Start Quiz</button>
+            <button onClick={() => setView("quiz")}>Start Quiz ➡️</button>
           </>
         )}
       </div>
@@ -108,12 +118,14 @@ const Game = () => {
 
   if (view === "done") {
     return (
-      <div className="game-container">
-        <h2>🎉 Quiz Complete!</h2>
-        <p>{playerName}, you scored <strong>{score}</strong> out of <strong>{questions.length}</strong>!</p>
-        <p>Congrats, {playerName}! 🎉 Keep practicing to improve even more. 🚀</p>
-        {scoreSaved && <p style={{ color: 'green' }}>✅ Score saved!</p>}
-        <button onClick={() => {
+      <div className="done-view">
+      <h2>🏁 All done, {playerName}!</h2>
+      <p>You scored <strong>{score}</strong> out of <strong>{questions.length}</strong>! 🎉</p>
+      <p>🌟 Awesome job, {playerName}! You’re amazing! 🌟</p>
+      {scoreSaved && <p className="score-saved">✅ Score saved!</p>}
+      <button
+        className="play-again-btn"
+        onClick={() => {
           setView("instructions");
           setCurrent(0);
           setScore(0);
@@ -122,8 +134,18 @@ const Game = () => {
           setNameEntered(false);
           setPlayerName("");
           setScoreSaved(false);
+
         }}>
-          Play Again
+          Play Again 🔄
+        </button>
+
+        <button
+          className="choose-topic-btn"
+          onClick={() => {
+                window.location.href = "/game";
+           }}
+        >
+           🎯 Choose Another Topic
         </button>
       </div>
     );
@@ -135,7 +157,7 @@ const Game = () => {
     <div className="game-container">
       {questions.length > 0 ? (
         <>
-          <h3>Q{current + 1}: {q.question}</h3>
+          <h3>🔎 Q{current + 1}: {q.question}</h3>
           {q.options.map((opt, index) => (
             <button
               key={index}
@@ -149,11 +171,10 @@ const Game = () => {
           <p>{feedback}</p>
         </>
       ) : (
-        <p>Loading questions...</p>
+        <p>⏳ Loading questions...</p>
       )}
     </div>
   );
 };
 
 export default Game;
-

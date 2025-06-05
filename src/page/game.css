@@ -1,37 +1,131 @@
+body {
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  background-color: #fffbe6;
+  margin: 0;
+  padding: 0;
+}
+
 .game-container {
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
+  padding: 30px;
+  max-width: 700px;
+  margin: 40px auto;
   text-align: center;
-  font-family: sans-serif;
-  background-color: #f4f4f4;
+  background-color: #fffcf2;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.done-view {
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  border-radius: 20px;
+  padding: 30px;
+  max-width: 700px;
+  margin: 40px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  color: #333;
+}
+
+.done-view h2 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.done-view p {
+  font-size: 1.3rem;
+  margin: 10px 0;
+}
+
+.done-view .score-saved {
+  color: green;
+  font-size: 1.1rem;
+  margin-top: 12px;
+}
+
+.done-view .play-again-btn {
+  background-color: #fdd835;
+  color: #000;
+  border: none;
+  padding: 14px 28px;
+  font-size: 1.2rem;
+  font-weight: bold;
   border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-top: 20px;
+}
+
+.done-view .play-again-btn:hover {
+  transform: scale(1.05);
+  background-color: #fbc02d;
+}
+
+.choose-topic-btn {
+  background-color: #81c784;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  margin-top: 15px;
+}
+
+.choose-topic-btn:hover {
+  transform: scale(1.05);
+  background-color: #66bb6a;
+}
+
+h2, h3, p, li {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+input[type="text"] {
+  padding: 12px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 2px solid #ccc;
+  width: 60%;
 }
 
 button {
   display: block;
+  width: 80%;
+  max-width: 300px;
   margin: 10px auto;
   padding: 12px 20px;
-  background-color: #007bff;
-  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background-color: #ffd54f;
+  color: #333;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.3s;
+  transition: all 0.2s ease;
 }
 
 button:hover {
-  background-color: #0056b3;
-  transform: scale(1.03);
+  background-color: #ffca28;
+  transform: scale(1.05);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .selected {
-  background-color: #ffc107;
-  color: black;
+  background-color: #aed581 !important;
+  color: #fff;
 }
 
-.subject-select h2 {
-  margin-bottom: 20px;
+ul {
+  list-style-type: "🌟 ";
+  text-align: left;
+  padding-left: 20px;
 }
