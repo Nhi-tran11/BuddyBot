@@ -26,6 +26,7 @@ app.use('/api/quiz', quizRoutes);
 const lessonRoutes = require('./routes/lessonRoutes'); // ✅ New
 app.use('/api/lessons', lessonRoutes);                 // ✅ New
 
+app.use('/api/scores', require('./routes/scoreRoutes'));//scoreki
 
 app.use(session({
     secret: 'your_secret_key',
