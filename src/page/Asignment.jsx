@@ -30,32 +30,32 @@ function Assignment() {
                     credentials: 'include' // Include cookies for session authentication
                 });
 
-                
+
                 if (!userResponse.ok) {
                     const errorData = await userResponse.json();
                     throw new Error(errorData.message || `Authentication failed: ${userResponse.status}`);
                 }
-                
+
                 const userData = await userResponse.json();
-                
+
 
                 if (!userData || !userData.user) {
                     throw new Error('No user data received');
                 }
-                
+
 
                 setCurrentUser(userData.user);
-                
+
                 // Check user role
                 if (userData.user.role === 'parent') {
                     setParentId(userData.user._id);
-                    
+
                     // Fetch children for parent
                     const childrenResponse = await fetch('http://localhost:5000/session/user-children', {
                         credentials: 'include'
                     });
 
-                    
+
                     if (!childrenResponse.ok) {
                         throw new Error(`Failed to fetch children: ${childrenResponse.status}`);
                     }
@@ -68,7 +68,7 @@ function Assignment() {
                     navigate('/ShowAssignment');
                 }
 
-      
+
             }
             catch (error) {
                 // Handle errors
@@ -80,7 +80,7 @@ function Assignment() {
 
             }
         };
-        
+
         fetchUserData();
     }, []);
 
@@ -97,13 +97,13 @@ function Assignment() {
         setLoading(true);
         setError('');
         setSuccessMessage('');
-        
+
         try {
-      
+
             if (!childId) {
                 throw new Error('Please select a child');
             }
-            
+
             // Check if prompt is empty
             if (!prompt) {
                 throw new Error('Prompt cannot be empty');
@@ -111,7 +111,7 @@ function Assignment() {
 
             const dueDate = new Date();
             dueDate.setDate(dueDate.getDate() + 7); // Default due date: 1 week
-            
+
             const response = await fetch('http://localhost:5000/query-prompt', {
                 method: 'POST',
                 credentials: 'include',
@@ -129,22 +129,22 @@ function Assignment() {
                     dueDate: dueDate.toISOString()
                 })
             });
-            
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || `Request failed: ${response.status}`);
             }
-            
+
             const data = await response.json();
-           
-            
+
+
             // Show success notification or handle next steps
             console.log('Assignment created successfully:', data);
-            console.log('Assignment:',data.assignment);
-            console.log('Assignment:',data.debugquestions);
-            
+            console.log('Assignment:', data.assignment);
+            console.log('Assignment:', data.debugquestions);
+
             setSuccessMessage('Assignment successfully generated');
-          
+
             setTimeout(() => {
                 navigate('/ShowAssignment');
             }, 2000);
@@ -161,7 +161,7 @@ function Assignment() {
             <div className="ai-assignment-form">
                 <h3>Generate an Assignment with AI</h3>
                 {error && <div className="error">{error}</div>}
-                
+
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label>Subject:</label>
@@ -200,14 +200,14 @@ function Assignment() {
                     </div>
                     <div className="form-group">
                         <label>Prompt for AI (e.g., "10 addition problems" or "spelling practice"):</label>
-                        <textarea 
+                        <textarea
                             value={prompt}
                             onChange={e => setPrompt(e.target.value)}
                             required
                             placeholder="Generate 5 simple addition problems using numbers 1-10"
                         />
                     </div>
-                    
+
                     <button type="submit" disabled={loading || !prompt}>
                         {loading ? 'Generating...' : 'Create Assignment'}
                     </button>
@@ -217,18 +217,18 @@ function Assignment() {
                     </button>
                 </form>
             </div>
-             {loading && <div className="loading-spinner">Generating...</div>}
+            {loading && <div className="loading-spinner">Generating...</div>}
             {successMessage && (
                 <div className="success-message">
                     {successMessage}
                 </div>
             )}
-    
+
 
         </div>
     );
 }
 
 
- 
+
 export default Assignment;

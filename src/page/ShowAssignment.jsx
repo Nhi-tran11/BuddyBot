@@ -23,14 +23,14 @@ function ShowAssignment() {
         credentials: 'include'
       });
 
-      
+
 
       if (!response.ok) {
         const errorStatus = response.status;
         console.error(`Server responded with status ${errorStatus}`);
-    
+
       }
-      
+
       const data = await response.json();
       setRole(data.userRole);
 
@@ -46,7 +46,7 @@ function ShowAssignment() {
       setError('Failed to fetch assignments');
     }
   };
-    useEffect(() => {
+  useEffect(() => {
     if (showAssignments) {
       fetchAssignments();
     }
@@ -58,14 +58,14 @@ function ShowAssignment() {
         credentials: 'include'
       });
 
-      
+
 
       if (!response.ok) {
         const errorStatus = response.status;
         console.error(`Server responded with status ${errorStatus}`);
-    
+
       }
-      
+
       const data = await response.json();
       setRole(data.userRole);
 
@@ -88,20 +88,20 @@ function ShowAssignment() {
     }
   }, [showCompletedAssignments]);
 
-const fetchPendingAssignments = async () => {
+  const fetchPendingAssignments = async () => {
     try {
       const response = await fetch(`http://localhost:5000/pendingAssignments?showPendingAssignments=true`, {
         credentials: 'include'
       });
 
-      
+
 
       if (!response.ok) {
         const errorStatus = response.status;
         console.error(`Server responded with status ${errorStatus}`);
-    
+
       }
-      
+
       const data = await response.json();
       setRole(data.userRole);
 
@@ -125,26 +125,26 @@ const fetchPendingAssignments = async () => {
   }, [showPendingAssignments]);
 
   //Add a separate function to get user role
-const fetchUserRole = async () => {
-  try {
-    const response = await fetch('http://localhost:5000/assignments?showAssignments=true', {
-      credentials: 'include'
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      setRole(data.userRole);
-      localStorage.setItem('role', data.userRole);
-    }
-  } catch (err) {
-    console.error('Error fetching user role:', err);
-  }
-};
+  const fetchUserRole = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/assignments?showAssignments=true', {
+        credentials: 'include'
+      });
 
-// Call it when component mounts
-useEffect(() => {
-  fetchUserRole();
-}, []);
+      if (response.ok) {
+        const data = await response.json();
+        setRole(data.userRole);
+        localStorage.setItem('role', data.userRole);
+      }
+    } catch (err) {
+      console.error('Error fetching user role:', err);
+    }
+  };
+
+  // Call it when component mounts
+  useEffect(() => {
+    fetchUserRole();
+  }, []);
   useEffect(() => {
     if (generateQuestion) {
       navigate('/Assignment');
@@ -221,36 +221,36 @@ useEffect(() => {
                   className="assignment-item"
                   onClick={() => {
                     navigate(`/Question/${assignment._id}`, { state: { assignmentId: assignment._id, role: role } });
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <h4>{assignment.title} - {assignment.subject}</h4>
-                    <p><strong>Due:</strong> {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : "N/A"}</p>
-                    <div className="assignment-description">
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
+                  <h4>{assignment.title} - {assignment.subject}</h4>
+                  <p><strong>Due:</strong> {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : "N/A"}</p>
+                  <div className="assignment-description">
                     <strong>Description:</strong> {assignment.description}
-                    </div>
-                    <div className="assignment-status">
+                  </div>
+                  <div className="assignment-status">
                     <strong>Status:</strong> {assignment.status}
-                    </div>
-                    <div className="assignment-grade">
+                  </div>
+                  <div className="assignment-grade">
                     <strong>Grade:</strong> {assignment.score || "Not graded yet"}
-                    </div>
-                    <div className="assignment-difficulty">
+                  </div>
+                  <div className="assignment-difficulty">
                     <strong>Difficulty:</strong> {assignment.difficulty}
-                    </div>
-                    {role === 'parent' && (
+                  </div>
+                  {role === 'parent' && (
                     <button
                       type="button"
                       onClick={async (e) => {
-                      e.stopPropagation();
-                      const confirmDelete = window.confirm("Are you sure you want to delete this assignment?");
-                      if (!confirmDelete) return;
-                      const response = await fetch(`http://localhost:5000/delete-assignment/${assignment._id}`, {
-                        method: 'DELETE',
-                        headers: {
-                        'Content-Type': 'application/json'
-                        }
-                      });
+                        e.stopPropagation();
+                        const confirmDelete = window.confirm("Are you sure you want to delete this assignment?");
+                        if (!confirmDelete) return;
+                        const response = await fetch(`http://localhost:5000/delete-assignment/${assignment._id}`, {
+                          method: 'DELETE',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          }
+                        });
 
                         if (response.ok) {
                           alert('Assignment deleted successfully');
@@ -293,58 +293,6 @@ useEffect(() => {
                   </div>
                   <div className="assignment-grade">
                     <strong>Grade:</strong> {assignment.score || "Not graded yet"}
-                  </div>
-                  <div className="assignment-difficulty">
-                    <strong>Difficulty:</strong> {assignment.difficulty}
-                  </div>
-                  {role === 'parent' && (
-                    <button
-                      type="button"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        const response = await fetch(`http://localhost:5000/delete-assignment/${assignment._id}`, {
-                          method: 'DELETE',
-                          headers: {
-                            'Content-Type': 'application/json'
-                          }
-                        });
-
-                        if (response.ok) {
-                          alert('Assignment deleted successfully');
-                          fetchAssignments();
-                        } else {
-                          alert('Failed to delete assignment');
-                        }
-                      }}
-                    >
-                      Delete
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      )}
-
-
-      {showPendingAssignments && (
-        <div className="child-assignments">
-          {assignments.length === 0 ? (
-            <p>No assignments found for this child.</p>
-          ) : (
-            <ul className="assignments-list">
-              {assignments.map(assignment => (
-                <li
-                  key={assignment._id}
-                  className="assignment-item"
-                  onClick={() => navigate(`/Question/${assignment._id}`, { state: { assignmentId: assignment._id, role: role } })}
-                  style={{ cursor: "pointer" }}
-                >
-                  <h4>{assignment.title} - {assignment.subject}</h4>
-                  <p><strong>Due:</strong> {assignment.dueDate ? new Date(assignment.dueDate).toLocaleDateString() : "N/A"}</p>
-                  <div className="assignment-description">
-                    <strong>Description:</strong> {assignment.description}
                   </div>
                   <div className="assignment-difficulty">
                     <strong>Difficulty:</strong> {assignment.difficulty}

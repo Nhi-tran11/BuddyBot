@@ -20,7 +20,7 @@ export const loginUser = async (credentials) => {
         // Store auth data in localStorage
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        
+
         return data;
     } catch (error) {
         console.error('Login error:', error);

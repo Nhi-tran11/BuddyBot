@@ -19,7 +19,7 @@ describe('App Component', () => {
     expect(linkElement).not.toBeNull();
   });
 
- 
+
   it('renders the Navbar component', () => {
     render(
       <BrowserRouter>

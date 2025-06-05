@@ -84,7 +84,7 @@ From the `backend` directory, run:
 ```sh
 npm run test
 ```
-This will run backend tests using [Jest](https://jestjs.io/) and [Supertest](https://github.com/ladjs/supertest).
+This will run backend tests using [Jest](https://jestjs.io/) 
 
 ---
 

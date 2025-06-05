@@ -52,44 +52,44 @@ const Question = () => {
       setScore(prev => prev + 1);
     }
   };
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
 
-        e.preventDefault();
-       
-        setError('');
-        try {
-          const response = await fetch(`http://localhost:5000/update-assignment`, {
-              method: 'PUT',
-              headers: {
-                  'Content-Type': 'application/json'
-          },
-              body: JSON.stringify({ assignmentId, score })
-          });
-               localStorage.setItem('score', score);
-          navigate('/grading', { state: { score } });
-            localStorage.removeItem('assignmentId');
-            localStorage.removeItem('role');
-            if (!response.ok) {
-                throw new Error('Failed to submit answers');
-            }
-            // Optionally handle response here
-        } catch (error) {
-            setError("Failed to submit answers");
-        }
+    e.preventDefault();
+
+    setError('');
+    try {
+      const response = await fetch(`http://localhost:5000/update-assignment`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ assignmentId, score })
+      });
+      localStorage.setItem('score', score);
+      navigate('/grading', { state: { score } });
+      localStorage.removeItem('assignmentId');
+      localStorage.removeItem('role');
+      if (!response.ok) {
+        throw new Error('Failed to submit answers');
       }
- 
-      const handleBack = async (e) => {
-        e.preventDefault();
-        setError('');
-        try {
-                 localStorage.removeItem('assignmentId');
-            localStorage.removeItem('role');
-            navigate('/showassignment');
-       
-        } catch (error) {
-            setError("Could not navigate back");
-        }
-      }
+      // Optionally handle response here
+    } catch (error) {
+      setError("Failed to submit answers");
+    }
+  }
+
+  const handleBack = async (e) => {
+    e.preventDefault();
+    setError('');
+    try {
+      localStorage.removeItem('assignmentId');
+      localStorage.removeItem('role');
+      navigate('/showassignment');
+
+    } catch (error) {
+      setError("Could not navigate back");
+    }
+  }
   return (
     <div className="assignment-questions">
       <strong>Your assignment</strong>
@@ -132,45 +132,45 @@ const Question = () => {
                         )}
                       </li>
                     );
-                    })
-                  ) : (
-                    <li>No options available.</li>
-                  )}
-                  </ul>
-                </li>
-                ))
-              ) : (
-                <li>No questions available.</li>
-              )}
+                  })
+                ) : (
+                  <li>No options available.</li>
+                )}
               </ul>
-              <div style={{ marginTop: 20 }}>
-              <strong>Score: {score} / {assignment?.questions?.length || 0}</strong>
-              </div>
-              <div className='button-container'>
-                {role === "parent" && (
-                  <>
-                 
-                    <button type="button" onClick={handleBack}>
-                      Back to Assignments
-                    </button>
-                  </>
-                )}
-                {role === "child" && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={handleSubmit}
-                    >
-                      Submit
-                    </button>
-                    <button type="button" onClick={handleBack}>
-                      Back to Assignments
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-            );
-          };
+            </li>
+          ))
+        ) : (
+          <li>No questions available.</li>
+        )}
+      </ul>
+      <div style={{ marginTop: 20 }}>
+        <strong>Score: {score} / {assignment?.questions?.length || 0}</strong>
+      </div>
+      <div className='button-container'>
+        {role === "parent" && (
+          <>
+
+            <button type="button" onClick={handleBack}>
+              Back to Assignments
+            </button>
+          </>
+        )}
+        {role === "child" && (
+          <>
+            <button
+              type="button"
+              onClick={handleSubmit}
+            >
+              Submit
+            </button>
+            <button type="button" onClick={handleBack}>
+              Back to Assignments
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
 
 export default Question;

@@ -33,6 +33,7 @@ function App() {
 
       <Navbar />
       <ErrorBoundary>
+
       <Routes>
         <Route path="/" element={<Home />} />
       
@@ -44,16 +45,17 @@ function App() {
         <Route path="/Question/:assignmentId" element={<Question />} />
         <Route path="/assignment" element={<Assignment />} />
         <Route path="/lessons/create" element={<CreateLesson />} />
-<Route path="/subject/:subjectSlug/create-lesson" element={<CreateLesson />} />
+        <Route path="/subject/:subjectSlug/create-lesson" element={<CreateLesson />} />
         <Route path="/lesson" element={<Lesson />} />
         <Route path="/timetable" element={<TimeTable />} />
         <Route path="/lesson/:subjectName" element={<SubjectDetail />} />
         <Route path="/grading" element={<GradingAssignment />} />
         <Route path="/game" element={<SubjectSelect />} />
         <Route path="/game/:subject" element={<Game />} />
-<Route path="/lesson-details/:id" element={<LessonDetails />} />
+        <Route path="/lesson-details/:id" element={<LessonDetails />} />
       </Routes>
-</ErrorBoundary>
+      </ErrorBoundary>
+
       <Footer />
     </div>
   );

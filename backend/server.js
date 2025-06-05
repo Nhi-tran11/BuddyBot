@@ -9,7 +9,7 @@ const app = express();
 const Assignment = require('./model/Assignment');
 const quizRoutes = require('./routes/quizRoutes');
 const { GoogleGenAI } = require("@google/genai");
-
+const scoreRoutes = require('./routes/scoreRoutes');
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 
@@ -22,8 +22,10 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use('/api/quiz', quizRoutes);
+
 const lessonRoutes = require('./routes/lessonRoutes'); // ✅ New
 app.use('/api/lessons', lessonRoutes);                 // ✅ New
+
 
 app.use(session({
     secret: 'your_secret_key',
