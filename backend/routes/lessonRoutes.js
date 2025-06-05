@@ -73,5 +73,35 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ error: 'Failed to update lesson' });
   }
 });
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+const ai = new GoogleGenerativeAI(process.env.API_KEY);
+
+router.post('/details', async (req, res) => {
+  const { title } = req.body;
+  try {
+    const model = ai.getGenerativeModel({
+      model: 'models/gemini-2.0-flash' // ✅ works with v1beta
+    });
+
+    const prompt = `You're a children's educational assistant. Based on the lesson title "${title}", give:
+    
+    1. A short, friendly 2-line summary
+    2. 3 main topics it may cover
+    3. 2 book or PDF recommendations (can be generic titles)
+
+    Keep it helpful and simple for a child.`;
+
+    const result = await model.generateContent({
+      contents: [{ parts: [{ text: prompt }] }]
+    });
+
+    const text = result.response.text();
+    res.json({ response: text });
+  } catch (err) {
+    console.error("❌ GenAI failed:", err);
+    res.status(500).json({ error: "Failed to generate content" });
+  }
+});
+
 
 module.exports = router;

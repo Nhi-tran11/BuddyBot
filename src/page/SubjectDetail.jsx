@@ -223,7 +223,11 @@ export default function SubjectDetail() {
                     </>
                   ) : (
                     <>
-                      {lesson.title}
+                      
+<Link to={`/lesson-details/${lesson._id}`} style={{ textDecoration: 'underline', color: '#007bff' }}>
+  {lesson.title}
+</Link>
+
                       <a href={lesson.youtubeUrl} target="_blank" rel="noopener noreferrer" className="lesson-link">
                         <img src="/youtube-icon.png" alt="Watch on YouTube" className="youtube-icon" />
                       </a>

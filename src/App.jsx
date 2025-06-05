@@ -22,7 +22,7 @@ import ErrorBoundary from './ErrorBoundary';
 import SubjectSelect from './page/SubjectSelect';
 import SubjectOverview from "./page/SubjectOverview";
 import CreateLesson from "./page/CreateLesson"; // or adjust path if needed
-
+import LessonDetails from "./page/LessonDetails";
 function App() {
 
 
@@ -51,7 +51,7 @@ function App() {
         <Route path="/grading" element={<GradingAssignment />} />
         <Route path="/game" element={<SubjectSelect />} />
         <Route path="/game/:subject" element={<Game />} />
- 
+<Route path="/lesson-details/:id" element={<LessonDetails />} />
       </Routes>
 </ErrorBoundary>
       <Footer />
