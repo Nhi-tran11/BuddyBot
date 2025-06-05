@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Lesson = require('../model/lesson'); // ✅ your Lesson model
+const Lesson = require('../model/lesson'); 
 
 // ✅ CREATE a new lesson
 router.post('/', async (req, res) => {
@@ -80,7 +80,7 @@ router.post('/details', async (req, res) => {
   const { title } = req.body;
   try {
     const model = ai.getGenerativeModel({
-      model: 'models/gemini-2.0-flash' // ✅ works with v1beta
+      model: 'models/gemini-2.0-flash' // works with v1beta
     });
 
     const prompt = `You're a children's educational assistant. Based on the lesson title "${title}", give:
