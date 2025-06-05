@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './timetable.css';
+import './TimeTable.css';
 
 const Timetable = () => {
   const [timetable, setTimetable] = useState([]);
