@@ -28,6 +28,11 @@ app.use('/api/lessons', lessonRoutes);                 // ✅ New
 
 app.use('/api/scores', require('./routes/scoreRoutes'));//scoreki
 
+app.use(cors({origin: '*',
+    methods: ['GET', 'POST', 'DELETE', 'PUT'], 
+   
+    credentials: true}))//tt
+
 app.use(session({
     secret: 'your_secret_key',
     resave: true,
@@ -37,6 +42,10 @@ app.use(session({
     }
     
 }));
+const timetableRoutes = require('./routes/timetableRoutes');
+console.log("Loaded timetableRoutes:", typeof timetableRoutes);
+
+app.use('/api/timetable', timetableRoutes);//tt
 
 // MongoDB connection
 mongoose.connect(process.env.MONGODB_URI)
