@@ -20,19 +20,28 @@ const Timetable = () => {
   // Add new entry
   const handleAdd = () => {
     const { day, time, subject } = newEntry;
-    if (!day || !time || !subject) {
-      alert("Please fill all fields.");
-      return;
-    }
 
-    axios.post('http://localhost:5000/api/timetable', { day, time, subject })
-      .then(res => {
-        setTimetable([...timetable, res.data]);
-        setNewEntry({ day: '', time: '', subject: '' });
-      })
-      .catch(err => console.error("Failed to add entry:", err));
-  };
+  if (!day || !time || !subject) {
+    alert("Please fill all fields.");
+    return;
+  }
 
+  //  Check if a slot with same day & time already exists
+  const slotTaken = timetable.find(entry => entry.day === day && entry.time === time);
+
+  if (slotTaken) {
+    alert("❌ Slot already full! Choose a different time.");
+    return;
+  }
+
+  //  If valid, post to backend
+  axios.post('http://localhost:5000/api/timetable', { day, time, subject })
+    .then(res => {
+      setTimetable([...timetable, res.data]);
+      setNewEntry({ day: '', time: '', subject: '' });
+    })
+    .catch(err => console.error("Failed to add entry:", err));
+};
   // Delete entry
   const handleDelete = (id) => {
     axios.delete(`http://localhost:5000/api/timetable/${id}`)
