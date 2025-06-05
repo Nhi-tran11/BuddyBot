@@ -1,19 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import './Lesson.css';  // ✅ Using same CSS
+import './Lesson.css';
 
 export default function SubjectDetail() {
   const { subjectName } = useParams();
-
   const [showContent, setShowContent] = useState(false);
   const [avatarMoved, setAvatarMoved] = useState(false);
+  const [savedLessons, setSavedLessons] = useState([]);
+  const [editingId, setEditingId] = useState(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editUrl, setEditUrl] = useState('');
 
-  // Format subject name
-  const formattedSubject = subjectName
-    .replace(/-/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+  const subjectKeyMap = {
+    mathematics: "Mathematics",
+    science: "Science",
+    english: "English",
+    history: "History",
+    geography: "Geography",
+    art: "Art",
+    "physical-education": "Physical Education",
+    music: "Music"
+  };
 
-  // Dialogues per subject
   const dialogues = {
     mathematics: "Awesome pick! 🧮 Let’s crunch some numbers and become math wizards together!",
     science: "Whoa, Science! 🧪 Get ready to explore the mysteries of the universe with me 🚀.",
@@ -25,7 +33,6 @@ export default function SubjectDetail() {
     music: "Fantastic! 🎵 Let’s jam, sing, and explore the magical world of music together!"
   };
 
-  // Subject icons
   const subjectIcons = {
     mathematics: '/math.png',
     science: '/science.png',
@@ -37,7 +44,6 @@ export default function SubjectDetail() {
     music: '/music.png'
   };
 
-  // Subject data: intro + lessons + YouTube links
   const subjectsData = {
     Mathematics: {
       intro: "Welcome to Mathematics lessons! Here you'll explore exciting topics like numbers, formulas, and fun activities.",
@@ -90,7 +96,7 @@ export default function SubjectDetail() {
         { name: "Drawing Basics", link: "https://youtube.com/playlist?list=PLKeobeGXOefEDbwiJAoHXWg7hLNh0qIiF&si=2F8dvN7ESi8GVEga" },
         { name: "Color Mixing", link: "https://youtu.be/8VgIjFwF_Vs?si=K4K9BEpaySWnoDly" },
         { name: "Famous Artists", link: "https://youtube.com/playlist?list=PLXB5R79dmFB6HpWbgpF8-3aXPqVb_rbj5&si=9SfkK0Y5LBseuR1c" },
-        { name: "Craft Projects", link: "www.youtube.com/@EasyKidsCraft" }
+        { name: "Craft Projects", link: "https://www.youtube.com/@EasyKidsCraft" }
       ]
     },
     "Physical Education": {
@@ -114,14 +120,10 @@ export default function SubjectDetail() {
   };
 
   const avatarDialogue =
-    dialogues[subjectName.toLowerCase()] ||
-    "Great pick! 🌟 Let’s explore awesome lessons and have some fun learning!";
-
+    dialogues[subjectName.toLowerCase()] || "Great pick! 🌟 Let’s explore awesome lessons and have some fun learning!";
   const subjectIcon = subjectIcons[subjectName.toLowerCase()];
-  const subjectContent = subjectsData[formattedSubject] || {
-    intro: "Welcome! Explore fun topics and activities.",
-    lessons: []
-  };
+  const subjectKey = subjectKeyMap[subjectName.toLowerCase()];
+  const subjectContent = subjectsData[subjectKey] || { intro: "Welcome! Explore fun topics and activities.", lessons: [] };
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -129,52 +131,130 @@ export default function SubjectDetail() {
       setAvatarMoved(true);
     }, 2500);
 
+    fetch('http://localhost:5000/api/lessons')
+      .then((res) => res.json())
+      .then((data) => {
+        const filtered = data.lessons.filter(
+          (lesson) => lesson.subject?.toLowerCase().replace(/\s+/g, '-') === subjectName.toLowerCase()
+        );
+        setSavedLessons(filtered);
+      })
+      .catch((err) => console.error('Error fetching saved lessons:', err));
+
     return () => clearTimeout(timer);
   }, [subjectName]);
 
+  const handleDeleteLesson = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this lesson?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/lessons/${id}`, { method: 'DELETE' });
+      if (res.ok) setSavedLessons((prev) => prev.filter((l) => l._id !== id));
+      else alert("Failed to delete.");
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("❌ Error deleting lesson");
+    }
+  };
+
+  const handleSaveEdit = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/lessons/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: editTitle, youtubeUrl: editUrl })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setSavedLessons((prev) => prev.map((l) => (l._id === id ? data.lesson : l)));
+        setEditingId(null);
+      }
+    } catch (err) {
+      console.error("Update failed:", err);
+      alert("❌ Error updating lesson");
+    }
+  };
+
   return (
     <div className="lesson-container">
-      {/* Avatar greeting */}
       <div className={`lesson-avatar ${avatarMoved ? 'moved' : 'centered'}`}>
         <img src="/avatar-bot.png" alt="Buddy Bot" />
         {!avatarMoved && <p>{avatarDialogue}</p>}
       </div>
 
-      {/* Main content after greeting */}
       {showContent && (
         <div className="subjects-section fade-in">
           {subjectIcon && (
             <img
               src={subjectIcon}
-              alt={`${formattedSubject} icon`}
+              alt={`${subjectKey} icon`}
               className="subject-icon"
               style={{ width: '100px', height: '100px', marginBottom: '15px' }}
             />
           )}
-          <h1>{formattedSubject}</h1>
+          <h1>{subjectKey}</h1>
           <div className="lesson-card">
             <p>{subjectContent.intro}</p>
             <ul>
               {subjectContent.lessons.map((lesson, index) => (
                 <li
-                  key={index}
+                  key={`static-${index}`}
                   style={{ animationDelay: `${0.2 * (index + 1)}s` }}
                   className="fade-in-up lesson-item"
                 >
                   {lesson.name}
-                  {lesson.link && (
-                    <a
-                      href={lesson.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="lesson-link"
-                    >
-                      <img
-                        src="/youtube-icon.png"
-                        alt="Watch on YouTube"
-                        className="youtube-icon"
-                      />
-                    </a>
+                  <a href={lesson.link} target="_blank" rel="noopener noreferrer" className="lesson-link">
+                    <img src="/youtube-icon.png" alt="Watch on YouTube" className="youtube-icon" />
+                  </a>
+                </li>
+              ))}
+
+              {savedLessons.map((lesson, index) => (
+                <li
+                  key={`saved-${index}`}
+                  style={{ animationDelay: `${0.2 * (index + subjectContent.lessons.length + 1)}s` }}
+                  className="fade-in-up lesson-item"
+                >
+                  {editingId === lesson._id ? (
+                    <>
+                      <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} placeholder="Edit title" />
+                      <input value={editUrl} onChange={(e) => setEditUrl(e.target.value)} placeholder="Edit YouTube URL" />
+                      <button onClick={() => handleSaveEdit(lesson._id)}>💾 Save</button>
+                      <button onClick={() => setEditingId(null)}>❌ Cancel</button>
+                    </>
+                  ) : (
+                    <>
+                      
+<Link to={`/lesson-details/${lesson._id}`} style={{ textDecoration: 'underline', color: '#007bff' }}>
+  {lesson.title}
+</Link>
+
+                      <a href={lesson.youtubeUrl} target="_blank" rel="noopener noreferrer" className="lesson-link">
+                        <img src="/youtube-icon.png" alt="Watch on YouTube" className="youtube-icon" />
+                      </a>
+                      <button
+                        onClick={() => {
+                          setEditingId(lesson._id);
+                          setEditTitle(lesson.title);
+                          setEditUrl(lesson.youtubeUrl);
+                        }}
+                      >
+                        📝 Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteLesson(lesson._id)}
+                        style={{
+                          marginLeft: '10px',
+                          backgroundColor: '#e53935',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '6px',
+                          padding: '4px 10px',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Delete
+                      </button>
+                    </>
                   )}
                 </li>
               ))}

@@ -40,6 +40,14 @@ export default function Lesson() {
         <div className="subjects-section fade-in">
           <h1>Subjects List</h1>
           <p>Select a subject to explore lessons and resources:</p>
+          <Link
+  to="/lessons/create"
+  className="back-button"
+  style={{ marginBottom: '20px' }}
+>
+  ➕ Create Lesson
+</Link>
+
           <div className="subject-list">
             {subjects.map((subject, index) => (
               <Link

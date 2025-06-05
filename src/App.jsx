@@ -20,7 +20,9 @@ import Lesson from './page/Lesson';
 import TimeTable from './page/TimeTable';
 import ErrorBoundary from './ErrorBoundary';
 import SubjectSelect from './page/SubjectSelect';
-
+import SubjectOverview from "./page/SubjectOverview";
+import CreateLesson from "./page/CreateLesson"; // or adjust path if needed
+import LessonDetails from "./page/LessonDetails";
 function App() {
 
 
@@ -31,26 +33,29 @@ function App() {
 
       <Navbar />
       <ErrorBoundary>
-        <Routes>
-          <Route path="/" element={<Home />} />
 
-          <Route path="/logout" element={<LogOut />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/signupChild" element={<SignUpChild />} />
-          <Route path="/ShowAssignment" element={<ShowAssignment />} />
-          <Route path="/Question/:assignmentId" element={<Question />} />
-          <Route path="/assignment" element={<Assignment />} />
-
-          <Route path="/lesson" element={<Lesson />} />
-          <Route path="/timetable" element={<TimeTable />} />
-          <Route path="/lesson/:subjectName" element={<SubjectDetail />} />
-          <Route path="/grading" element={<GradingAssignment />} />
-          <Route path="/game" element={<SubjectSelect />} />
-          <Route path="/game/:subject" element={<Game />} />
-
-        </Routes>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      
+        <Route path="/logout" element={<LogOut/>} />
+        <Route path="/login" element={<Login/> }/>
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/signupChild" element={<SignUpChild />} />
+        <Route path="/ShowAssignment" element={<ShowAssignment />} />
+        <Route path="/Question/:assignmentId" element={<Question />} />
+        <Route path="/assignment" element={<Assignment />} />
+        <Route path="/lessons/create" element={<CreateLesson />} />
+        <Route path="/subject/:subjectSlug/create-lesson" element={<CreateLesson />} />
+        <Route path="/lesson" element={<Lesson />} />
+        <Route path="/timetable" element={<TimeTable />} />
+        <Route path="/lesson/:subjectName" element={<SubjectDetail />} />
+        <Route path="/grading" element={<GradingAssignment />} />
+        <Route path="/game" element={<SubjectSelect />} />
+        <Route path="/game/:subject" element={<Game />} />
+        <Route path="/lesson-details/:id" element={<LessonDetails />} />
+      </Routes>
       </ErrorBoundary>
+
       <Footer />
     </div>
   );

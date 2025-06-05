@@ -1,3 +1,5 @@
+
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -20,7 +22,10 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use('/api/quiz', quizRoutes);
-app.use('/api/scores', scoreRoutes);
+
+const lessonRoutes = require('./routes/lessonRoutes'); // ✅ New
+app.use('/api/lessons', lessonRoutes);                 // ✅ New
+
 
 app.use(session({
     secret: 'your_secret_key',
@@ -29,6 +34,7 @@ app.use(session({
     cookie: {
         maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
+    
 }));
 
 // MongoDB connection
