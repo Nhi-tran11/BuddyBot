@@ -14,3 +14,16 @@ exports.submitScore = async (req, res) => {
     res.status(500).json({ error: "Failed to save score" });
   }
 };
+
+
+
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const topScores = await Score.find()
+      .sort({ score: -1 })
+      .limit(10);
+    res.json(topScores);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch leaderboard' });
+  }
+};

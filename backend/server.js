@@ -21,6 +21,7 @@ app.use(cors({
 app.use(express.json());
 app.use('/api/quiz', quizRoutes);
 app.use('/api/scores', scoreRoutes);
+app.use('/api/scores', require('./routes/scoreRoutes'));
 
 app.use(session({
     secret: 'your_secret_key',
