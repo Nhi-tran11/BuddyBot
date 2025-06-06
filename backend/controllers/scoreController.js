@@ -32,8 +32,7 @@ exports.getLeaderboard = async (req, res) => {
 exports.getLeaderboardBySubject = async (req, res) => {
   try {
     const subject = req.params.subject;
-    const scores = await Score.find({ subject })
-      .sort({ score: -1, createdAt: 1 });
+    const scores = await Score.find({ subject }).sort({ score: -1, createdAt: 1 });
     res.json(scores);
   } catch (err) {
     res.status(500).json({ error: err.message });

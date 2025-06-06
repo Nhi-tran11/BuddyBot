@@ -33,7 +33,8 @@ const Game = () => {
         playerName,
         score,
         total: questions.length,
-        subject: subject.charAt(0).toUpperCase() + subject.slice(1)
+        subject: subject.toLowerCase() === "gk" ? "General Knowledge" : subject.charAt(0).toUpperCase() + subject.slice(1)
+
       })
         .then(() => {
           console.log("✅ Score saved");
