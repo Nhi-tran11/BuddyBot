@@ -7,6 +7,7 @@ const Question = () => {
   const [assignment, setAssignment] = useState(null);
   const [error, setError] = useState('');
   const [userAnswers, setUserAnswers] = useState({});
+  const [lengthQuestion, setLengthQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ const Question = () => {
       [qIdx]: selectedLetter
     }));
 
-    // Optionally update score
+    //  update score
     if (selectedLetter === correctLetter) {
       setScore(prev => prev + 1);
     }
@@ -63,9 +64,10 @@ const Question = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ assignmentId, score })
+        body: JSON.stringify({ assignmentId, score,lengthQuestion })
       });
       localStorage.setItem('score', score);
+      
       navigate('/grading', { state: { score } });
       localStorage.removeItem('assignmentId');
       localStorage.removeItem('role');
@@ -77,7 +79,11 @@ const Question = () => {
       setError("Failed to submit answers");
     }
   }
-
+  useEffect(() => {
+    if (assignment && assignment.questions) {
+      setLengthQuestion(assignment.questions.length);
+    }
+  }, [assignment]);
   const handleBack = async (e) => {
     e.preventDefault();
     setError('');

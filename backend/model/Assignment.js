@@ -53,9 +53,8 @@ const assignmentSchema = new mongoose.Schema({
     },
     // Child's score if applicable
     score: {
-        type: Number,
-        min: 0,
-        max: 100
+        type: String,
+        default: 'not graded yet'
     },
     // Flag for AI-generated content
     aiGenerated: {
