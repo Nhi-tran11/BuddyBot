@@ -37,13 +37,7 @@ BuddyBot is an educational platform designed to make learning fun and interactiv
     npm install
     ```
 
-3. Edit  `.env` file in the `backend` directory with the following variables:
-    ```
-    Add API_KEY
-    API_KEY=your_google_genai_api_key
-    ```
-
-4. Start the backend server:
+3. Start the backend server:
     ```sh
     npm run dev
     ```
