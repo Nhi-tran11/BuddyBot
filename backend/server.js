@@ -338,7 +338,7 @@ async function queryPrompt(prompt, subject, ageRange, difficulty) {
         {
             parts: [
                 {
-                    text: `Generate muitiple choice questions for a ${subject} topic, appropriate for ages ${ageRange} and ${difficulty}.\n base on request of Prompt: ${prompt}.Format your response as a numbered list (1, 2, 3) with each question and options anwers with ((a), (b), (c), (d)) in different lines and final result with (answer:). Provide the response without any characters and no introduction.`,
+                    text: `Generate muitiple choice questions for a ${subject} topic, appropriate for ages ${ageRange} and ${difficulty}.\n base on request of Prompt: ${prompt}.Format your response as a numbered list (1, 2, 3) with each question and options anwers with ((a), (b), (c), (d)) in different lines and final result with (answer:). Provide the response without any characters and no introduction.Please do not change format of the response.`,
                 }
             ]
         }
@@ -396,7 +396,7 @@ function parseAIResponseToQuestions(aiResponse) {
         const answerLine = lines.find(line => /^\(answer:\s*[a-dA-D]\)$/i.test(line));
         let answer = null;
         if (answerLine) {
-        const answerMatch = answerLine.match(/^\(answer:\s*([a-dA-D])\)$/i);
+            const answerMatch = answerLine.match(/^\(answer:\s*([a-dA-D])\)$/i);
             if (answerMatch) {
                 answer = answerMatch[1].toUpperCase();
             }
@@ -411,10 +411,11 @@ function parseAIResponseToQuestions(aiResponse) {
 // Endpoint to update an assignment's score and mark as completed
 app.put('/update-assignment', async (req, res) => {
     try {
-        const { assignmentId, score } = req.body;
-        // Update the assignment with the given ID, set score and status to 'completed'
+        const { assignmentId, score, lengthQuestion } = req.body;
+        // Update the assignment with the given ID, set score as "X / Y" and status to 'completed'
+        const formattedScore = `${score} / ${lengthQuestion}`;
         const assignment = await Assignment.findByIdAndUpdate(assignmentId, {
-            score: score,
+            score: formattedScore,
             status: 'completed'
         }, { new: true });
 
