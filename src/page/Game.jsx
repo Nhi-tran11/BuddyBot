@@ -14,7 +14,8 @@ const Game = () => {
   const [playerName, setPlayerName] = useState("");
   const [nameEntered, setNameEntered] = useState(false);
   const [scoreSaved, setScoreSaved] = useState(false);
-  const [leaders, setLeaders] = useState([]); // Moved here
+  const [leaders, setLeaders] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState("All");
 
   useEffect(() => {
     if (subject) {
@@ -31,7 +32,9 @@ const Game = () => {
       axios.post('http://localhost:5000/api/scores', {
         playerName,
         score,
-        total: questions.length
+        total: questions.length,
+        subject: subject.toLowerCase() === "gk" ? "General Knowledge" : subject.charAt(0).toUpperCase() + subject.slice(1)
+
       })
         .then(() => {
           console.log("✅ Score saved");
@@ -46,11 +49,17 @@ const Game = () => {
 
   useEffect(() => {
     if (view === "leaderboard") {
-      axios.get('http://localhost:5000/api/scores/leaderboard')
-        .then(res => setLeaders(res.data))
-        .catch(err => console.error("Leaderboard fetch error:", err));
+      const endpoint =
+        selectedSubject === "All"
+          ? 'http://localhost:5000/api/scores/leaderboard'
+          : `http://localhost:5000/api/scores/leaderboard/${selectedSubject}`;
+
+      axios
+        .get(endpoint)
+        .then((res) => setLeaders(res.data))
+        .catch((err) => console.error("Leaderboard fetch error:", err));
     }
-  }, [view]);
+  }, [view, selectedSubject]);
 
   const handleAnswer = (index) => {
     const isCorrect = index === questions[current].correctAnswer;
@@ -128,20 +137,38 @@ const Game = () => {
     return (
       <div className="game-container">
         <h2>🏆 Leaderboard</h2>
-        <ol>
+
+        <label style={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+          Sort by Topic:{" "}
+          <select
+            value={selectedSubject}
+            onChange={(e) => setSelectedSubject(e.target.value)}
+            style={{ padding: "6px", borderRadius: "6px", fontSize: "1rem", marginTop: "10px" }}
+          >
+            <option value="All">All Subjects</option>
+            <option value="Math">Math</option>
+            <option value="English">English</option>
+            <option value="Science">Science</option>
+            <option value="General Knowledge">General Knowledge</option>
+          </select>
+        </label>
+
+        <ol style={{ marginTop: "20px" }}>
           {leaders.map((player, index) => (
             <li key={index}>
-              {player.playerName} — {player.score} / {player.total}
+              {player.playerName} — {player.score} / {player.total} ({player.subject})
             </li>
           ))}
         </ol>
-        <button className="play-again-btn"
-           onClick={() => {
-           window.location.href = "/game";
-           }}
-          >
+
+        <button
+          className="play-again-btn"
+          onClick={() => {
+            window.location.href = "/game";
+          }}
+        >
           ⬅️ Back to Start
-         </button>
+        </button>
       </div>
     );
   }
