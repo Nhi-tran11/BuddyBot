@@ -24,7 +24,7 @@ afterAll(async () => {
 
 describe('POST /api/lessons (TDD)', () => {
 
- /* // ❌ TEST 1: Written before the backend route exists
+ // ❌ TEST 1: Written before the backend route exists
   it('should FAIL because no code is written yet', async () => {
     // This is how TDD starts: no backend logic yet
     const res = await request(app)
@@ -53,7 +53,7 @@ describe('POST /api/lessons (TDD)', () => {
     expect(res.statusCode).toBe(201);
     expect(res.body.lesson).toHaveProperty('_id');
     expect(res.body.lesson.title).toBe('Addition Basics');
-  });*/
+  });
 
  // ✅ TEST 3: Confirms data saved in DB
   it('should store lesson in the database', async () => {
